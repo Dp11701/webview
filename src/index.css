@@ -31,3 +31,11 @@ body{
     linear-gradient(115deg, #4F3920, #997040 60%, #47331C) padding-box,
     linear-gradient(to right, #FFEBC3, #CA9834) border-box;
 }
+
+.border-gradient-alt {
+  border: 2px solid transparent;
+  border-radius: 16px; /* khớp với rounded-[16px] */
+  background: 
+    linear-gradient(115deg, #805C32 30%, #3D2C18) padding-box,
+    linear-gradient(to right, #FFFFFF33, #FFFFFF33) border-box;
+}

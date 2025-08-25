@@ -66,9 +66,9 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-4 w-full">
+    <div className="flex flex-col gap-4  w-full">
       {/* DramaShort Premium */}
-      <div className="flex flex-row items-center justify-between ">
+      <div className="flex flex-row items-center justify-between bg-gradient-to-b from-[#5C4E3E] to-[#141415] p-4">
         <span className="text-[18px] font-[600] leading-[28px] text-white">
           DramaShort Premium
         </span>
@@ -78,7 +78,7 @@ export default function Home() {
       </div>
 
       {/* Price for this Ep: */}
-      <div className="flex flex-row justify-start items-center gap-10">
+      <div className="flex flex-row justify-start items-center gap-10 px-4">
         <div className=" flex flex-row gap-2">
           <span className="text-[14px] leading-[20px] font-[400] text-[#9E9E9F]">
             Price for this Ep:
@@ -102,46 +102,102 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      <div
-        className="grid grid-cols-12 gap-4 border-gradient rounded-[16px] p-1"
-        onClick={sendMessageToMobile}
-      >
-        <div className="col-span-8 p-4 rounded-lg">
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-row gap-2 items-center">
-              <img src={Crown} alt="crown" />
-              <span className="text-[18px] leading-[28px] font-[600] text-white">
-                Weekly VIP
+      {/* Subscription */}
+      <div className="flex flex-col gap-4 px-4">
+        <div
+          className="grid grid-cols-12 gap-4 border-gradient rounded-[16px] p-1"
+          onClick={sendMessageToMobile}
+        >
+          <div className="col-span-9 p-4 rounded-lg">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-row gap-2 items-center">
+                <img src={Crown} alt="crown" />
+                <span className="text-[18px] leading-[28px] font-[600] text-white">
+                  Weekly VIP
+                </span>
+              </div>
+              <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
+                Unlimited access to all series for 1 week $19.99 for the first
+                month, then $24.99/month
+              </span>
+              <span className="font-[500] text-[9px] leading-[12px] text-white">
+                Auto renew • Cancel anytime
               </span>
             </div>
-            <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
-              Unlimited access to all series for 1 week $19.99 for the first
-              month, then $24.99/month
-            </span>
-            <span className="font-[500] text-[9px] leading-[12px] text-white">
-              Auto renew • Cancel anytime
-            </span>
+          </div>
+          <div className="col-span-3  p-4 rounded-lg">
+            <div className="flex flex-col gap-1 items-center justify-center h-full">
+              <span className="text-white font-[700] text-[18px] leading-[24px]">
+                {productData?.price_title || "$19.99"}
+              </span>
+              <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
+                {productData?.cost_title || "$24.99"}
+              </span>
+            </div>
           </div>
         </div>
-        <div className="col-span-4  p-4 rounded-lg">
-          <div className="flex flex-col gap-1 items-center justify-center h-full">
-            <span className="text-white font-[700] text-[18px] leading-[24px]">
-              {productData?.price_title || "$19.99"}
-            </span>
-            <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
-              {productData?.cost_title || "$24.99"}
-            </span>
+        <div
+          className="grid grid-cols-12 gap-4 border-gradient-alt rounded-[16px] p-1"
+          onClick={sendMessageToMobile}
+        >
+          <div className="col-span-9 p-4 rounded-lg">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-row gap-2 items-center">
+                <img src={Crown} alt="crown" />
+                <span className="text-[18px] leading-[28px] font-[600] text-white">
+                  Monthly VIP
+                </span>
+              </div>
+              <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
+                Unlimited access to all series for 1 month
+              </span>
+              <span className="font-[500] text-[9px] leading-[12px] text-white">
+                Auto renew • Cancel anytime
+              </span>
+            </div>
+          </div>
+          <div className="col-span-3  p-4 rounded-lg">
+            <div className="flex flex-col gap-1 items-center justify-center h-full">
+              <span className="text-white font-[700] text-[18px] leading-[24px]">
+                {productData?.price_title || "36.99$"}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          className="grid grid-cols-12 gap-4 border-gradient-alt rounded-[16px] p-1"
+          onClick={sendMessageToMobile}
+        >
+          <div className="col-span-9 p-4 rounded-lg">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-row gap-2 items-center">
+                <img src={Crown} alt="crown" />
+                <span className="text-[18px] leading-[28px] font-[600] text-white">
+                  Yearly VIP
+                </span>
+              </div>
+              <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
+                Unlimited access to all series for 1 year
+              </span>
+              <span className="font-[500] text-[9px] leading-[12px] text-white">
+                Auto renew • Cancel anytime
+              </span>
+            </div>
+          </div>
+          <div className="col-span-3  p-4 rounded-lg">
+            <div className="flex flex-col gap-1 items-center justify-center h-full">
+              <span className="text-white font-[700] text-[18px] leading-[24px]">
+                {productData?.price_title || "$249.99"}
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Test span để kiểm tra data từ mobile */}
-      <div className="mt-4 p-4 bg-gray-800 rounded-lg">
-        <span className="text-white text-sm">
-          {productDataTest
-            ? `Đã nhận data: ${JSON.stringify(productDataTest)}`
-            : "Chưa nhận được data từ mobile"}
+      {/* DramaShort Premium */}
+      <div className="flex flex-col items-start px-4">
+        <span className="text-[18px] leading-[28px] font-[600] text-white">
+          Coin Store
         </span>
       </div>
     </div>
