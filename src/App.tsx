@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Settings from "./pages/Settings";
-import Navigation from "./components/Navigation";
 
 export default function App() {
   return (
