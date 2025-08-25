@@ -1,1 +1,33 @@
 @import "tailwindcss";
+
+body{
+  background-color: #141415;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  -webkit-overscroll-behavior: none;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
+  -webkit-overscroll-behavior-x: none;
+  -webkit-overscroll-behavior-y: none;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  /* Prevent viewport bounce on iOS */
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.border-gradient {
+  border: 2px solid transparent;
+  border-radius: 16px; /* khớp với rounded-[16px] */
+  background: 
+    linear-gradient(115deg, #4F3920, #997040 60%, #47331C) padding-box,
+    linear-gradient(to right, #FFEBC3, #CA9834) border-box;
+}
