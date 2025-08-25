@@ -19,8 +19,7 @@ export default function Home() {
       if ((window as any).ikapp?.products) {
         const products = (window as any).ikapp.products;
         const targetProduct = products.find(
-          (product: Product) =>
-            product.product_id === "heart_rate_subs_yearly_no_trial"
+          (product: Product) => product.product_id === "ikame_4_months_subs"
         );
         if (targetProduct) {
           setProductData(targetProduct);
