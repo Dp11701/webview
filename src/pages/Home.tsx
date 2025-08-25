@@ -12,12 +12,16 @@ interface Product {
 export default function Home() {
   const [count, setCount] = useState(0);
   const [productData, setProductData] = useState<Product | null>(null);
+  const [productDataTest, setProductDataTest] = useState<Product | null>(null);
 
   // Lắng nghe sự kiện từ mobile
   useEffect(() => {
     const checkForProducts = () => {
       if ((window as any).ikapp?.products) {
         const products = (window as any).ikapp.products;
+        if (products.length > 0) {
+          setProductDataTest(products);
+        }
         const targetProduct = products.find(
           (product: Product) => product.product_id === "ikame_4_months_subs"
         );
@@ -130,6 +134,15 @@ export default function Home() {
             </span>
           </div>
         </div>
+      </div>
+
+      {/* Test span để kiểm tra data từ mobile */}
+      <div className="mt-4 p-4 bg-gray-800 rounded-lg">
+        <span className="text-white text-sm">
+          {productDataTest
+            ? `Đã nhận data: ${JSON.stringify(productDataTest)}`
+            : "Chưa nhận được data từ mobile"}
+        </span>
       </div>
     </div>
   );
