@@ -19,6 +19,29 @@ export default function Home() {
     const checkForProducts = () => {
       if ((window as any).ikapp?.products) {
         const products = (window as any).ikapp.products;
+        console.log("Products found:", products); // Debug log
+
+        if (products.length > 0) {
+          setProductDataTest(products);
+        }
+        const targetProduct = products.find(
+          (product: Product) => product.product_id === "ikame_4_months_subs"
+        );
+        if (targetProduct) {
+          console.log("Target product found:", targetProduct); // Debug log
+          setProductData(targetProduct);
+        }
+      }
+    };
+
+    // Kiểm tra ngay khi component mount
+    checkForProducts();
+
+    // Method 1: Event listener approach (tốt hơn polling)
+    const handleProductsUpdate = (event: CustomEvent) => {
+      console.log("Products updated via event:", event.detail);
+      if (event.detail?.products) {
+        const products = event.detail.products;
         if (products.length > 0) {
           setProductDataTest(products);
         }
@@ -31,13 +54,47 @@ export default function Home() {
       }
     };
 
-    // Kiểm tra ngay khi component mount
-    checkForProducts();
+    // Lắng nghe custom event
+    window.addEventListener(
+      "productsUpdated",
+      handleProductsUpdate as EventListener
+    );
 
-    // Lắng nghe thay đổi trên window.ikapp.products
-    const interval = setInterval(checkForProducts, 100);
+    // Method 2: Watch for window.ikapp changes (fallback)
+    let lastProductsLength = 0;
+    const interval = setInterval(() => {
+      if ((window as any).ikapp?.products) {
+        const currentLength = (window as any).ikapp.products.length;
+        // Chỉ update khi có thay đổi thực sự
+        if (currentLength !== lastProductsLength) {
+          console.log(
+            "Products length changed:",
+            lastProductsLength,
+            "->",
+            currentLength
+          );
+          lastProductsLength = currentLength;
+          checkForProducts();
+        }
+      }
+    }, 200); // Tăng interval để giảm overhead
 
-    return () => clearInterval(interval);
+    // Method 3: Delayed check (cho trường hợp mobile app cần thời gian setup)
+    const delayedChecks = [500, 1000, 2000].map((delay) =>
+      setTimeout(() => {
+        console.log(`Delayed check after ${delay}ms`);
+        checkForProducts();
+      }, delay)
+    );
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener(
+        "productsUpdated",
+        handleProductsUpdate as EventListener
+      );
+      delayedChecks.forEach((timeout) => clearTimeout(timeout));
+    };
   }, []);
 
   const sendMessageToMobile = () => {
@@ -196,9 +253,99 @@ export default function Home() {
 
       {/* DramaShort Premium */}
       <div className="flex flex-col items-start px-4">
-        <span className="text-[18px] leading-[28px] font-[600] text-white">
+        <span className="text-[18px] leading-[28px] font-[600] text-white mb-4">
           Coin Store
         </span>
+        <div className="grid grid-cols-12 gap-4 w-full">
+          <div className="col-span-6 relative flex flex-col gap-2 p-4 bg-[#FFFFFF1A] border-gradient-alt-2 ">
+            <div className="flex flex-row gap-2 items-center justify-start px-5 pt-5">
+              <img src={Coin} alt="coin" />
+              <span className="text-[18px] leading-[28px] font-[600] text-white">
+                100
+              </span>
+              <span className="text-[18px] leading-[28px] font-[600] text-white">
+                +
+              </span>
+              <span className="text-[16px] font-[400] leading-[24px] text-[#E2E2E2]">
+                100
+              </span>
+            </div>
+            <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
+              $2.99
+            </span>
+            {/* Bonus Badge */}
+            <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-3 py-2 rounded-tl-[16px] rounded-br-[16px]">
+              BONUS 100%
+            </div>
+          </div>
+
+          <div className="col-span-6 relative flex flex-col gap-2 p-4 bg-[#FFFFFF1A] border-gradient-alt-3  ">
+            <div className="flex flex-row gap-2 items-center justify-start px-5 pt-5">
+              <img src={Coin} alt="coin" />
+              <span className="text-[18px] leading-[28px] font-[600] text-white">
+                300
+              </span>
+              <span className="text-[18px] leading-[28px] font-[600] text-white">
+                +
+              </span>
+              <span className="text-[16px] font-[400] leading-[24px] text-[#E2E2E2]">
+                150
+              </span>
+            </div>
+            <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
+              $6.99
+            </span>
+            {/* Bonus Badge */}
+            <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-3 py-2 rounded-tl-[16px] rounded-br-[14px]">
+              BONUS 50%
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-12 gap-4 w-full mt-4">
+          <div className="col-span-6 relative flex flex-col gap-2 p-4 bg-[#FFFFFF1A] border-gradient-alt-3  ">
+            <div className="flex flex-row gap-2 items-center justify-start px-5 pt-5">
+              <img src={Coin} alt="coin" />
+              <span className="text-[18px] leading-[28px] font-[600] text-white">
+                700
+              </span>
+              <span className="text-[18px] leading-[28px] font-[600] text-white">
+                +
+              </span>
+              <span className="text-[16px] font-[400] leading-[24px] text-[#E2E2E2]">
+                300
+              </span>
+            </div>
+            <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
+              $9.99
+            </span>
+            {/* Bonus Badge */}
+            {/* <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-5 py-2 rounded-tl-[16px] rounded-br-[14px]">
+              BONUS 50%
+            </div> */}
+          </div>
+
+          <div className="col-span-6 relative flex flex-col gap-2 p-4 bg-[#FFFFFF1A] border-gradient-alt-3  ">
+            <div className="flex flex-row gap-2 items-center justify-start px-5 pt-5">
+              <img src={Coin} alt="coin" />
+              <span className="text-[18px] leading-[28px] font-[600] text-white">
+                1000
+              </span>
+              <span className="text-[18px] leading-[28px] font-[600] text-white">
+                +
+              </span>
+              <span className="text-[16px] font-[400] leading-[24px] text-[#E2E2E2]">
+                1000
+              </span>
+            </div>
+            <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
+              $19.99
+            </span>
+            {/* Bonus Badge */}
+            <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-3 py-2 rounded-tl-[16px] rounded-br-[14px]">
+              BONUS 100%
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
