@@ -12,7 +12,6 @@ interface Product {
 export default function Home() {
   const [count, setCount] = useState(0);
   const [productData, setProductData] = useState<Product | null>(null);
-  const [productDataTest, setProductDataTest] = useState<Product | null>(null);
 
   // Lắng nghe sự kiện từ mobile
   useEffect(() => {
@@ -21,9 +20,6 @@ export default function Home() {
         const products = (window as any).ikapp.products;
         console.log("Products found:", products); // Debug log
 
-        if (products.length > 0) {
-          setProductDataTest(products);
-        }
         const targetProduct = products.find(
           (product: Product) => product.product_id === "ikame_4_months_subs"
         );
@@ -42,9 +38,6 @@ export default function Home() {
       console.log("Products updated via event:", event.detail);
       if (event.detail?.products) {
         const products = event.detail.products;
-        if (products.length > 0) {
-          setProductDataTest(products);
-        }
         const targetProduct = products.find(
           (product: Product) => product.product_id === "ikame_4_months_subs"
         );
