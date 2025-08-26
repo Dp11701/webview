@@ -123,7 +123,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col gap-4  w-full">
+    <div className="flex flex-col gap-4  w-full overflow-y-auto h-screen pb-10">
       {/* DramaShort Premium */}
       <div className="flex flex-row items-center justify-between bg-gradient-to-b from-[#5C4E3E] to-[#141415] p-4">
         <span className="text-[18px] font-[600] leading-[28px] text-white">
