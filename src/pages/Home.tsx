@@ -115,8 +115,7 @@ export default function Home() {
         }
 
         const monthlyVip = subscriptionProducts.find(
-          (product: Product) =>
-            product.productId === "dramashort_monthly_subscription"
+          (product: Product) => product.productId === "monthly_vip_1"
         );
         if (monthlyVip) {
           setMonthlyVip(monthlyVip);
