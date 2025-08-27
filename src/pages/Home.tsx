@@ -4,6 +4,24 @@ import Coin from "../assets/icons/Coin.svg";
 import Crown from "../assets/icons/crown.svg";
 import { detectPlatform, type Platform } from "../utils/platformDetection";
 
+// Constants from iOS app script
+const PLATFORM = Object.freeze({
+  IOS: "ios",
+  ANDROID: "android",
+});
+
+const CLIENT_EVENT = Object.freeze({
+  HAPTICS: "haptics",
+  GET_LOCAL_STORAGE: "getLocalStorage",
+  DISMISS: "dismiss",
+  TRACKING_EVENT: "trackingEvent",
+  SHOW_LOADING: "showLoading",
+  RESTORE_PURCHASE: "restorePurchase",
+  PURCHASE_PRODUCT: "purchaseProduct",
+  SHOW_TERMS: "showTerms",
+  SHOW_PRIVACY: "showPrivacy",
+});
+
 // Android Product structure
 interface AndroidProduct {
   productId: string;
@@ -52,7 +70,7 @@ interface ExtraInfo {
   priceFor: number;
 }
 
-// Declare global window properties
+// Declare global window properties (matching iOS script)
 declare global {
   interface Window {
     localPromises: {
@@ -70,6 +88,25 @@ declare global {
           postMessage: (message: any) => void;
         };
       };
+    };
+    ikapp?: {
+      languageCode?: string;
+      products?: any[];
+      extraInfo?: any;
+      platform?: string;
+      onProductsChanged?: (products: any[]) => void;
+      onLanguageCodeChanged?: (languageCode: string) => void;
+      onPlatformChanged?: (platform: string) => void;
+      trackingEvent?: (name: string, params: any) => void;
+      setShowLoading?: (loading: boolean) => void;
+      restorePurchase?: () => Promise<any>;
+      purchaseProduct?: (productId: string) => Promise<any>;
+      haptics?: () => void;
+      getLocalStorage?: (key: string) => Promise<any>;
+      dismiss?: () => void;
+      showPrivacyPolicy?: () => void;
+      showTermOfUse?: () => void;
+      sendToClient?: (event: string, payload: any) => Promise<any>;
     };
   }
 }
@@ -122,11 +159,11 @@ export default function Home() {
   };
 
   const processProductsBasedOnPlatform = (rawProducts: any[]): Product[] => {
-    if (platform === "android") {
+    if (platform === PLATFORM.ANDROID) {
       return rawProducts.map((product: AndroidProduct) =>
         transformAndroidProduct(product)
       );
-    } else if (platform === "ios") {
+    } else if (platform === PLATFORM.IOS) {
       return rawProducts.map((product: IOSProduct) =>
         transformIOSProduct(product)
       );
@@ -146,7 +183,11 @@ export default function Home() {
 
   // Helper functions for rendering based on platform
   const renderCoinPackageBonus = (packageItem: Product) => {
-    if (platform === "ios" && packageItem.bonus && packageItem.bonus > 0) {
+    if (
+      platform === PLATFORM.IOS &&
+      packageItem.bonus &&
+      packageItem.bonus > 0
+    ) {
       // iOS: show bonus coins
       return (
         <>
@@ -158,7 +199,7 @@ export default function Home() {
           </span>
         </>
       );
-    } else if (platform === "android" && packageItem.subTitle) {
+    } else if (platform === PLATFORM.ANDROID && packageItem.subTitle) {
       // Android: show subtitle bonus
       return (
         <>
@@ -175,11 +216,11 @@ export default function Home() {
   };
 
   const renderSubscriptionPrice = (subscription: Product | null) => {
-    if (platform === "ios") {
+    if (platform === PLATFORM.IOS) {
       // For iOS, priceTitle contains %@ placeholder - replace with actual price or show as is
       // Since we don't have actual price data, we'll show the priceTitle pattern
       return subscription?.priceTitle?.replace("%@", "Price") || "";
-    } else if (platform === "android") {
+    } else if (platform === PLATFORM.ANDROID) {
       // For Android, we have separate price and sale fields
       return subscription?.price || "";
     }
@@ -187,7 +228,7 @@ export default function Home() {
   };
 
   const renderSubscriptionSale = (subscription: Product | null) => {
-    if (platform === "android" && subscription?.sale) {
+    if (platform === PLATFORM.ANDROID && subscription?.sale) {
       return subscription.sale;
     }
     // iOS doesn't have separate sale field
@@ -195,22 +236,26 @@ export default function Home() {
   };
 
   const renderBonusSpecialTitle = (packageItem: Product) => {
-    if (platform === "ios" && packageItem.bonus && packageItem.bonus > 0) {
+    if (
+      platform === PLATFORM.IOS &&
+      packageItem.bonus &&
+      packageItem.bonus > 0
+    ) {
       // Calculate bonus percentage for iOS
       const bonusPercent = Math.round(
         (packageItem.bonus / packageItem.coin) * 100
       );
       return `BONUS ${bonusPercent}%`;
-    } else if (platform === "android" && packageItem.specialTitle) {
+    } else if (platform === PLATFORM.ANDROID && packageItem.specialTitle) {
       return packageItem.specialTitle;
     }
     return null;
   };
 
   const shouldShowBonusBadge = (packageItem: Product) => {
-    if (platform === "ios") {
+    if (platform === PLATFORM.IOS) {
       return packageItem.bonus && packageItem.bonus > 0;
-    } else if (platform === "android") {
+    } else if (platform === PLATFORM.ANDROID) {
       return packageItem.isSpecial && packageItem.specialTitle;
     }
     return false;
@@ -222,10 +267,25 @@ export default function Home() {
       window.localPromises = {};
     }
 
-    // Detect platform
-    const detectedPlatform = detectPlatform();
+    // Detect platform - prioritize ikapp.platform if available
+    let detectedPlatform: Platform = "unknown";
+    if (window.ikapp?.platform) {
+      detectedPlatform = window.ikapp.platform as Platform;
+      console.log("Platform from ikapp:", detectedPlatform);
+    } else {
+      detectedPlatform = detectPlatform();
+      console.log("Platform from detection:", detectedPlatform);
+    }
+
     setPlatform(detectedPlatform);
-    console.log("Detected platform:", detectedPlatform);
+
+    // Setup ikapp platform change listener
+    if (window.ikapp?.onPlatformChanged) {
+      window.ikapp.onPlatformChanged = (newPlatform: string) => {
+        console.log("Platform changed to:", newPlatform);
+        setPlatform(newPlatform as Platform);
+      };
+    }
   }, []);
 
   // Async function to send events to client
@@ -245,10 +305,10 @@ export default function Home() {
       console.log(`Sending to ${platform}:`, payloadEvent);
 
       // Send based on detected platform
-      if (platform === "ios" && window.webkit?.messageHandlers?.event) {
+      if (platform === PLATFORM.IOS && window.webkit?.messageHandlers?.event) {
         window.webkit.messageHandlers.event.postMessage(payloadEvent);
       } else if (
-        platform === "android" &&
+        platform === PLATFORM.ANDROID &&
         (window as any).AndroidBridge?.postMessage
       ) {
         (window as any).AndroidBridge.postMessage(JSON.stringify(payloadEvent));
@@ -299,7 +359,7 @@ export default function Home() {
         let monthlyVip: Product | undefined;
         let yearlyVip: Product | undefined;
 
-        if (platform === "android") {
+        if (platform === PLATFORM.ANDROID) {
           weeklyVip = subscriptionProducts.find(
             (product: Product) =>
               product.productId === "idrama_sub_weekly_vip_2"
@@ -311,7 +371,7 @@ export default function Home() {
             (product: Product) =>
               product.productId === "idrama_sub_yearly_vip_1"
           );
-        } else if (platform === "ios") {
+        } else if (platform === PLATFORM.IOS) {
           // For iOS, map based on exact productId and distinguish by priceTitle/subTitle
           weeklyVip = subscriptionProducts.find(
             (product: Product) =>
@@ -449,9 +509,30 @@ export default function Home() {
     }
 
     if (selectedProduct) {
-      await sendToClient("PLAN_SELECTED", {
-        productId: selectedProduct.productId,
-      });
+      if (platform === PLATFORM.IOS) {
+        // iOS: Use ikapp.purchaseProduct following the iOS script flow
+        try {
+          if (window.ikapp?.purchaseProduct) {
+            console.log(
+              "iOS: Calling ikapp.purchaseProduct for:",
+              selectedProduct.productId
+            );
+            const result = await window.ikapp.purchaseProduct(
+              selectedProduct.productId
+            );
+            console.log("iOS purchase result:", result);
+          } else {
+            console.warn("iOS: ikapp.purchaseProduct not available");
+          }
+        } catch (error) {
+          console.error("iOS purchase error:", error);
+        }
+      } else {
+        // Android: Send selection event
+        await sendToClient("PLAN_SELECTED", {
+          productId: selectedProduct.productId,
+        });
+      }
     }
   };
 
@@ -461,9 +542,30 @@ export default function Home() {
     // Get the selected coin package
     const selectedPackage = coinPackages[index];
     if (selectedPackage) {
-      await sendToClient("COIN_PACKAGE_SELECTED", {
-        productId: selectedPackage.productId,
-      });
+      if (platform === PLATFORM.IOS) {
+        // iOS: Use ikapp.purchaseProduct following the iOS script flow
+        try {
+          if (window.ikapp?.purchaseProduct) {
+            console.log(
+              "iOS: Calling ikapp.purchaseProduct for:",
+              selectedPackage.productId
+            );
+            const result = await window.ikapp.purchaseProduct(
+              selectedPackage.productId
+            );
+            console.log("iOS purchase result:", result);
+          } else {
+            console.warn("iOS: ikapp.purchaseProduct not available");
+          }
+        } catch (error) {
+          console.error("iOS purchase error:", error);
+        }
+      } else {
+        // Android: Send selection event
+        await sendToClient("COIN_PACKAGE_SELECTED", {
+          productId: selectedPackage.productId,
+        });
+      }
     }
   };
 
@@ -482,7 +584,15 @@ export default function Home() {
               Platform: {platform}
             </span>
           </div>
-          <button onClick={() => sendToClient("CLOSE_PREMIUM", {})}>
+          <button
+            onClick={() => {
+              if (platform === PLATFORM.IOS && window.ikapp?.dismiss) {
+                window.ikapp.dismiss();
+              } else {
+                sendToClient("CLOSE_PREMIUM", {});
+              }
+            }}
+          >
             <img src={Close} alt="close" />
           </button>
         </div>
@@ -531,7 +641,7 @@ export default function Home() {
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
                   <span className="text-[18px] leading-[28px] font-[600] text-white">
-                    {platform === "ios"
+                    {platform === PLATFORM.IOS
                       ? weeklyVip?.title || "Weekly Member"
                       : "Weekly VIP"}
                   </span>
@@ -571,7 +681,7 @@ export default function Home() {
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
                   <span className="text-[18px] leading-[28px] font-[600] text-white">
-                    {platform === "ios"
+                    {platform === PLATFORM.IOS
                       ? monthlyVip?.title || "Monthly Member"
                       : "Monthly VIP"}
                   </span>
@@ -611,7 +721,7 @@ export default function Home() {
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
                   <span className="text-[18px] leading-[28px] font-[600] text-white">
-                    {platform === "ios"
+                    {platform === PLATFORM.IOS
                       ? yearlyVip?.title || "Yearly Member"
                       : "Yearly VIP"}
                   </span>
