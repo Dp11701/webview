@@ -20,6 +20,28 @@ interface ExtraInfo {
   priceFor: number;
 }
 
+// Declare global window properties
+declare global {
+  interface Window {
+    localPromises: {
+      [key: string]: {
+        resolve: (value?: any) => void;
+        reject: (reason?: any) => void;
+      };
+    };
+    webkit?: {
+      messageHandlers?: {
+        event?: {
+          postMessage: (message: any) => void;
+        };
+        ReactNativeWebView?: {
+          postMessage: (message: any) => void;
+        };
+      };
+    };
+  }
+}
+
 export default function Home() {
   const [count, setCount] = useState(0);
   const [weeklyVip, setWeeklyVip] = useState<Product | null>(null);
@@ -35,12 +57,43 @@ export default function Home() {
     priceFor: 100,
   });
 
+  // Initialize localPromises if not exists
+  useEffect(() => {
+    if (!window.localPromises) {
+      window.localPromises = {};
+    }
+  }, []);
+
+  // Async function to send events to client
+  async function sendToClient(event: string, payload: any) {
+    return new Promise((resolve, reject) => {
+      const eventId = crypto.randomUUID();
+      const payloadEvent = {
+        eventId: eventId,
+        event: event,
+        payload: payload,
+      };
+      window.localPromises[eventId] = { resolve, reject };
+
+      // Send to iOS
+      if (window.webkit?.messageHandlers?.event) {
+        window.webkit.messageHandlers.event.postMessage(payloadEvent);
+      }
+      // Fallback for Android or other platforms
+      else if ((window as any).AndroidBridge?.postMessage) {
+        (window as any).AndroidBridge.postMessage(JSON.stringify(payloadEvent));
+      }
+    });
+  }
+
   // Lắng nghe sự kiện từ mobile
   useEffect(() => {
-    const checkForProducts = () => {
+    // Simple polling to check for data every 500ms
+    const checkForData = () => {
+      // Check for products
       if ((window as any).ikapp?.products) {
         const products = (window as any).ikapp.products;
-        console.log("Products found:", products); // Debug log
+        console.log("Products found:", products);
 
         // Tách subscription products (coin = 0)
         const subscriptionProducts = products.filter(
@@ -59,7 +112,6 @@ export default function Home() {
           (product: Product) => product.productId === "idrama_sub_weekly_vip_2"
         );
         if (weeklyVip) {
-          console.log("Weekly VIP found:", weeklyVip);
           setWeeklyVip(weeklyVip);
         }
 
@@ -68,7 +120,6 @@ export default function Home() {
             product.productId === "dramashort_monthly_subscription"
         );
         if (monthlyVip) {
-          console.log("Monthly VIP found:", monthlyVip);
           setMonthlyVip(monthlyVip);
         }
 
@@ -76,102 +127,54 @@ export default function Home() {
           (product: Product) => product.productId === "idrama_sub_yearly_vip_1"
         );
         if (yearlyVip) {
-          console.log("Yearly VIP found:", yearlyVip);
           setYearlyVip(yearlyVip);
         }
       }
-    };
 
-    const checkForExtraInfo = () => {
+      // Check for extraInfo
       if ((window as any).ikapp?.extraInfo) {
         const extraInfoData = (window as any).ikapp.extraInfo;
-        console.log("ExtraInfo found:", extraInfoData); // Debug log
+        console.log("ExtraInfo found:", extraInfoData);
         setExtraInfo(extraInfoData);
       }
     };
 
-    // Kiểm tra ngay khi component mount
-    checkForProducts();
-    checkForExtraInfo();
+    // Check immediately on mount
+    checkForData();
 
-    // Method 1: Event listener approach (tốt hơn polling)
-    const handleProductsUpdate = (event: CustomEvent) => {
-      console.log("Products updated via event:", event.detail);
-      if (event.detail?.products) {
-        checkForProducts();
-      }
-    };
-
-    const handleExtraInfoUpdate = (event: CustomEvent) => {
-      console.log("ExtraInfo updated via event:", event.detail);
-      if (event.detail?.extraInfo) {
-        checkForExtraInfo();
-      }
-    };
-
-    // Lắng nghe custom event
-    window.addEventListener(
-      "productsUpdated",
-      handleProductsUpdate as EventListener
-    );
-    window.addEventListener(
-      "extraInfoUpdated",
-      handleExtraInfoUpdate as EventListener
-    );
-
-    // Method 2: Watch for window.ikapp changes (fallback)
-    let lastProductsLength = 0;
-    let lastExtraInfo: string | null = null;
+    // Set up polling interval
     const interval = setInterval(() => {
-      if ((window as any).ikapp?.products) {
-        const currentLength = (window as any).ikapp.products.length;
-        // Chỉ update khi có thay đổi thực sự
-        if (currentLength !== lastProductsLength) {
-          console.log(
-            "Products length changed:",
-            lastProductsLength,
-            "->",
-            currentLength
-          );
-          lastProductsLength = currentLength;
-          checkForProducts();
-        }
-      }
+      checkForData();
+    }, 500);
 
-      if ((window as any).ikapp?.extraInfo) {
-        const currentExtraInfo = JSON.stringify(
-          (window as any).ikapp.extraInfo
-        );
-        if (currentExtraInfo !== lastExtraInfo) {
-          console.log("ExtraInfo changed");
-          lastExtraInfo = currentExtraInfo;
-          checkForExtraInfo();
-        }
-      }
-    }, 200); // Tăng interval để giảm overhead
-
-    // Method 3: Delayed check (cho trường hợp mobile app cần thời gian setup)
-    const delayedChecks = [500, 1000, 2000].map((delay) =>
-      setTimeout(() => {
-        console.log(`Delayed check after ${delay}ms`);
-        checkForProducts();
-        checkForExtraInfo();
-      }, delay)
-    );
-
+    // Cleanup
     return () => {
       clearInterval(interval);
-      window.removeEventListener(
-        "productsUpdated",
-        handleProductsUpdate as EventListener
-      );
-      window.removeEventListener(
-        "extraInfoUpdated",
-        handleExtraInfoUpdate as EventListener
-      );
-      delayedChecks.forEach((timeout) => clearTimeout(timeout));
     };
-  }, []);
+  }, []); // Empty dependency array - only run once on mount
+
+  // Separate useEffect to monitor when data is actually received
+  useEffect(() => {
+    if (weeklyVip || monthlyVip || yearlyVip) {
+      console.log("Subscription products received:", {
+        weeklyVip,
+        monthlyVip,
+        yearlyVip,
+      });
+    }
+  }, [weeklyVip, monthlyVip, yearlyVip]);
+
+  useEffect(() => {
+    if (coinPackages.length > 0) {
+      console.log("Coin packages received:", coinPackages);
+    }
+  }, [coinPackages]);
+
+  useEffect(() => {
+    if (extraInfo.myCoin > 0 || extraInfo.priceFor > 0) {
+      console.log("Extra info received:", extraInfo);
+    }
+  }, [extraInfo]);
 
   const sendMessageToMobile = () => {
     const message = {
@@ -198,14 +201,40 @@ export default function Home() {
     setCount(count + 1);
   };
 
-  const handlePlanSelection = (plan: "weekly" | "monthly" | "yearly") => {
+  const handlePlanSelection = async (plan: "weekly" | "monthly" | "yearly") => {
     setSelectedPlan(plan);
-    sendMessageToMobile();
+
+    // Get the selected product based on plan
+    let selectedProduct: Product | null = null;
+    switch (plan) {
+      case "weekly":
+        selectedProduct = weeklyVip;
+        break;
+      case "monthly":
+        selectedProduct = monthlyVip;
+        break;
+      case "yearly":
+        selectedProduct = yearlyVip;
+        break;
+    }
+
+    if (selectedProduct) {
+      await sendToClient("PLAN_SELECTED", {
+        productId: selectedProduct.productId,
+      });
+    }
   };
 
-  const handleCoinPackageSelection = (index: number) => {
+  const handleCoinPackageSelection = async (index: number) => {
     setSelectedCoinPackage(index);
-    sendMessageToMobile();
+
+    // Get the selected coin package
+    const selectedPackage = coinPackages[index];
+    if (selectedPackage) {
+      await sendToClient("COIN_PACKAGE_SELECTED", {
+        productId: selectedPackage.productId,
+      });
+    }
   };
 
   return (
