@@ -10,18 +10,6 @@ const PLATFORM = Object.freeze({
   ANDROID: "android",
 });
 
-const CLIENT_EVENT = Object.freeze({
-  HAPTICS: "haptics",
-  GET_LOCAL_STORAGE: "getLocalStorage",
-  DISMISS: "dismiss",
-  TRACKING_EVENT: "trackingEvent",
-  SHOW_LOADING: "showLoading",
-  RESTORE_PURCHASE: "restorePurchase",
-  PURCHASE_PRODUCT: "purchaseProduct",
-  SHOW_TERMS: "showTerms",
-  SHOW_PRIVACY: "showPrivacy",
-});
-
 // Android Product structure
 interface AndroidProduct {
   productId: string;
