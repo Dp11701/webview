@@ -149,7 +149,7 @@ export default function Home() {
     return () => {
       clearInterval(interval);
     };
-  }, [(window as any).ikapp]); // Listen to window.ikapp changes
+  }, []); // Listen to window.ikapp changes
 
   // Separate useEffect to monitor when data is actually received
   useEffect(() => {
