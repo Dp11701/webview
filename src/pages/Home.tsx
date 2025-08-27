@@ -43,7 +43,6 @@ declare global {
 }
 
 export default function Home() {
-  const [count, setCount] = useState(0);
   const [weeklyVip, setWeeklyVip] = useState<Product | null>(null);
   const [monthlyVip, setMonthlyVip] = useState<Product | null>(null);
   const [yearlyVip, setYearlyVip] = useState<Product | null>(null);
@@ -176,30 +175,30 @@ export default function Home() {
     }
   }, [extraInfo]);
 
-  const sendMessageToMobile = () => {
-    const message = {
-      type: "BUTTON_CLICK",
-      payload: {
-        clickedAt: Date.now(),
-        message: "User clicked the button!",
-        count: count + 1,
-      },
-    };
+  // const sendMessageToMobile = () => {
+  //   const message = {
+  //     type: "BUTTON_CLICK",
+  //     payload: {
+  //       clickedAt: Date.now(),
+  //       message: "User clicked the button!",
+  //       count: count + 1,
+  //     },
+  //   };
 
-    // 👉 Android (Kotlin) nhận qua AndroidBridge
-    if ((window as any).AndroidBridge?.postMessage) {
-      (window as any).AndroidBridge.postMessage(JSON.stringify(message));
-    }
+  //   // 👉 Android (Kotlin) nhận qua AndroidBridge
+  //   if ((window as any).AndroidBridge?.postMessage) {
+  //     (window as any).AndroidBridge.postMessage(JSON.stringify(message));
+  //   }
 
-    // 👉 iOS (WKWebView) nhận qua messageHandlers
-    if ((window as any).webkit?.messageHandlers?.ReactNativeWebView) {
-      (window as any).webkit.messageHandlers.ReactNativeWebView.postMessage(
-        JSON.stringify(message)
-      );
-    }
+  //   // 👉 iOS (WKWebView) nhận qua messageHandlers
+  //   if ((window as any).webkit?.messageHandlers?.ReactNativeWebView) {
+  //     (window as any).webkit.messageHandlers.ReactNativeWebView.postMessage(
+  //       JSON.stringify(message)
+  //     );
+  //   }
 
-    setCount(count + 1);
-  };
+  //   setCount(count + 1);
+  // };
 
   const handlePlanSelection = async (plan: "weekly" | "monthly" | "yearly") => {
     setSelectedPlan(plan);
