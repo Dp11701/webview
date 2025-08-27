@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import Close from "../assets/icons/Close.svg";
 import Coin from "../assets/icons/Coin.svg";
 import Crown from "../assets/icons/crown.svg";
+import { detectPlatform, type Platform } from "../utils/platformDetection";
 
-interface Product {
+// Android Product structure
+interface AndroidProduct {
   productId: string;
   coin: number;
   index: number;
@@ -13,6 +15,36 @@ interface Product {
   isSpecial: boolean;
   price: string;
   sale: string;
+}
+
+// iOS Product structure
+interface IOSProduct {
+  productId: string;
+  coin: number;
+  bonus: number;
+  index: number;
+  costIapId: string;
+  priceTitle: string;
+  title: string;
+  subTitle: string;
+  specialTitle: string;
+  isSpecial: boolean;
+}
+
+// Unified Product interface for internal use
+interface Product {
+  productId: string;
+  coin: number;
+  index: number;
+  priceTitle: string;
+  subTitle: string;
+  specialTitle: string;
+  isSpecial: boolean;
+  price?: string;
+  sale?: string;
+  bonus?: number;
+  title?: string;
+  costIapId?: string;
 }
 
 interface ExtraInfo {
@@ -55,12 +87,145 @@ export default function Home() {
     myCoin: 0,
     priceFor: 100,
   });
+  const [platform, setPlatform] = useState<Platform>("unknown");
 
-  // Initialize localPromises if not exists
+  // Utility functions to transform platform-specific data
+  const transformAndroidProduct = (androidProduct: AndroidProduct): Product => {
+    return {
+      productId: androidProduct.productId,
+      coin: androidProduct.coin,
+      index: androidProduct.index,
+      priceTitle: androidProduct.priceTitle,
+      subTitle: androidProduct.subTitle,
+      specialTitle: androidProduct.specialTitle,
+      isSpecial: androidProduct.isSpecial,
+      price: androidProduct.price,
+      sale: androidProduct.sale,
+    };
+  };
+
+  const transformIOSProduct = (iosProduct: IOSProduct): Product => {
+    return {
+      productId: iosProduct.productId,
+      coin: iosProduct.coin,
+      index: iosProduct.index,
+      priceTitle: iosProduct.priceTitle,
+      subTitle: iosProduct.subTitle,
+      specialTitle: iosProduct.specialTitle,
+      isSpecial: iosProduct.isSpecial,
+      bonus: iosProduct.bonus,
+      title: iosProduct.title,
+      costIapId: iosProduct.costIapId,
+      // For iOS, we don't have price/sale fields directly
+      // They might be embedded in priceTitle with %@ placeholder
+    };
+  };
+
+  const processProductsBasedOnPlatform = (rawProducts: any[]): Product[] => {
+    if (platform === "android") {
+      return rawProducts.map((product: AndroidProduct) =>
+        transformAndroidProduct(product)
+      );
+    } else if (platform === "ios") {
+      return rawProducts.map((product: IOSProduct) =>
+        transformIOSProduct(product)
+      );
+    } else {
+      // Unknown platform, try to handle both formats
+      return rawProducts.map((product: any) => {
+        if ("bonus" in product && "title" in product) {
+          // Looks like iOS format
+          return transformIOSProduct(product as IOSProduct);
+        } else {
+          // Assume Android format
+          return transformAndroidProduct(product as AndroidProduct);
+        }
+      });
+    }
+  };
+
+  // Helper functions for rendering based on platform
+  const renderCoinPackageBonus = (packageItem: Product) => {
+    if (platform === "ios" && packageItem.bonus && packageItem.bonus > 0) {
+      // iOS: show bonus coins
+      return (
+        <>
+          <span className="text-[18px] leading-[28px] font-[600] text-white">
+            +
+          </span>
+          <span className="text-[16px] font-[400] leading-[24px] text-[#E2E2E2]">
+            {packageItem.bonus}
+          </span>
+        </>
+      );
+    } else if (platform === "android" && packageItem.subTitle) {
+      // Android: show subtitle bonus
+      return (
+        <>
+          <span className="text-[18px] leading-[28px] font-[600] text-white">
+            +
+          </span>
+          <span className="text-[16px] font-[400] leading-[24px] text-[#E2E2E2]">
+            {packageItem.subTitle.replace("+ ", "").replace(" coins bonus", "")}
+          </span>
+        </>
+      );
+    }
+    return null;
+  };
+
+  const renderSubscriptionPrice = (subscription: Product | null) => {
+    if (platform === "ios") {
+      // For iOS, priceTitle contains %@ placeholder - replace with actual price or show as is
+      // Since we don't have actual price data, we'll show the priceTitle pattern
+      return subscription?.priceTitle?.replace("%@", "Price") || "";
+    } else if (platform === "android") {
+      // For Android, we have separate price and sale fields
+      return subscription?.price || "";
+    }
+    return "";
+  };
+
+  const renderSubscriptionSale = (subscription: Product | null) => {
+    if (platform === "android" && subscription?.sale) {
+      return subscription.sale;
+    }
+    // iOS doesn't have separate sale field
+    return null;
+  };
+
+  const renderBonusSpecialTitle = (packageItem: Product) => {
+    if (platform === "ios" && packageItem.bonus && packageItem.bonus > 0) {
+      // Calculate bonus percentage for iOS
+      const bonusPercent = Math.round(
+        (packageItem.bonus / packageItem.coin) * 100
+      );
+      return `BONUS ${bonusPercent}%`;
+    } else if (platform === "android" && packageItem.specialTitle) {
+      return packageItem.specialTitle;
+    }
+    return null;
+  };
+
+  const shouldShowBonusBadge = (packageItem: Product) => {
+    if (platform === "ios") {
+      return packageItem.bonus && packageItem.bonus > 0;
+    } else if (platform === "android") {
+      return packageItem.isSpecial && packageItem.specialTitle;
+    }
+    return false;
+  };
+
+  // Initialize platform detection and localPromises
   useEffect(() => {
     if (!window.localPromises) {
       window.localPromises = {};
     }
+
+    // Detect platform
+    const detectedPlatform = detectPlatform();
+    setPlatform(detectedPlatform);
+    console.log("Detected platform:", detectedPlatform);
   }, []);
 
   // Async function to send events to client
@@ -70,17 +235,35 @@ export default function Home() {
       const payloadEvent = {
         eventId: eventId,
         event: event,
-        payload: payload,
+        payload: {
+          ...payload,
+          platform: platform, // Include platform info in payload
+        },
       };
       window.localPromises[eventId] = { resolve, reject };
 
-      // Send to iOS
-      if (window.webkit?.messageHandlers?.event) {
+      console.log(`Sending to ${platform}:`, payloadEvent);
+
+      // Send based on detected platform
+      if (platform === "ios" && window.webkit?.messageHandlers?.event) {
         window.webkit.messageHandlers.event.postMessage(payloadEvent);
-      }
-      // Fallback for Android or other platforms
-      else if ((window as any).AndroidBridge?.postMessage) {
+      } else if (
+        platform === "android" &&
+        (window as any).AndroidBridge?.postMessage
+      ) {
         (window as any).AndroidBridge.postMessage(JSON.stringify(payloadEvent));
+      } else {
+        // Fallback: try both methods
+        if (window.webkit?.messageHandlers?.event) {
+          window.webkit.messageHandlers.event.postMessage(payloadEvent);
+        } else if ((window as any).AndroidBridge?.postMessage) {
+          (window as any).AndroidBridge.postMessage(
+            JSON.stringify(payloadEvent)
+          );
+        } else {
+          console.warn("No communication bridge found for platform:", platform);
+          reject(new Error("No communication bridge available"));
+        }
       }
     });
   }
@@ -91,39 +274,88 @@ export default function Home() {
     const checkForData = () => {
       // Check for products
       if ((window as any).ikapp?.products) {
-        const products = (window as any).ikapp.products;
-        console.log("Products found:", products);
+        const rawProducts = (window as any).ikapp.products;
+        console.log("Raw products found:", rawProducts);
+        console.log("Processing for platform:", platform);
+
+        // Process products based on platform
+        const processedProducts = processProductsBasedOnPlatform(rawProducts);
+        console.log("Processed products:", processedProducts);
 
         // Tách subscription products (coin = 0)
-        const subscriptionProducts = products.filter(
+        const subscriptionProducts = processedProducts.filter(
           (product: Product) => product.coin === 0
         );
 
         // Tách coin packages (coin > 0) và sắp xếp theo index
-        const coinProducts = products
+        const coinProducts = processedProducts
           .filter((product: Product) => product.coin > 0)
           .sort((a: Product, b: Product) => a.index - b.index);
 
         setCoinPackages(coinProducts);
 
-        // Xử lý subscription products
-        const weeklyVip = subscriptionProducts.find(
-          (product: Product) => product.productId === "idrama_sub_weekly_vip_2"
-        );
+        // Xử lý subscription products với platform-specific product IDs
+        let weeklyVip: Product | undefined;
+        let monthlyVip: Product | undefined;
+        let yearlyVip: Product | undefined;
+
+        if (platform === "android") {
+          weeklyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "idrama_sub_weekly_vip_2"
+          );
+          monthlyVip = subscriptionProducts.find(
+            (product: Product) => product.productId === "monthly_vip_1"
+          );
+          yearlyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "idrama_sub_yearly_vip_1"
+          );
+        } else if (platform === "ios") {
+          // For iOS, map based on exact productId and distinguish by priceTitle/subTitle
+          weeklyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "iOS_Short_Drama_sub_weekly_vip_2" &&
+              (product.priceTitle?.includes("Per week") ||
+                product.subTitle?.includes("1 week"))
+          );
+          monthlyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "iOS_Short_Drama_sub_weekly_vip_2" &&
+              (product.priceTitle?.includes("Per Month") ||
+                product.subTitle?.includes("1 month"))
+          );
+          yearlyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "iOS_Short_Drama_sub_yearly_vip_1" &&
+              (product.priceTitle?.includes("Per Year") ||
+                product.subTitle?.includes("1 year"))
+          );
+        } else {
+          // Fallback for unknown platform
+          weeklyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId.includes("weekly") ||
+              product.productId === "idrama_sub_weekly_vip_2"
+          );
+          monthlyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "monthly_vip_1" ||
+              product.subTitle?.includes("month")
+          );
+          yearlyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId.includes("yearly") ||
+              product.productId === "idrama_sub_yearly_vip_1"
+          );
+        }
+
         if (weeklyVip) {
           setWeeklyVip(weeklyVip);
         }
-
-        const monthlyVip = subscriptionProducts.find(
-          (product: Product) => product.productId === "monthly_vip_1"
-        );
         if (monthlyVip) {
           setMonthlyVip(monthlyVip);
         }
-
-        const yearlyVip = subscriptionProducts.find(
-          (product: Product) => product.productId === "idrama_sub_yearly_vip_1"
-        );
         if (yearlyVip) {
           setYearlyVip(yearlyVip);
         }
@@ -241,9 +473,15 @@ export default function Home() {
       <div className="flex-shrink-0">
         {/* DramaShort Premium */}
         <div className="flex flex-row items-center justify-between bg-gradient-to-b from-[#5C4E3E] to-[#141415] p-4">
-          <span className="text-[18px] font-[600] leading-[28px] text-white">
-            DramaShort Premium
-          </span>
+          <div className="flex flex-col">
+            <span className="text-[18px] font-[600] leading-[28px] text-white">
+              DramaShort Premium
+            </span>
+            {/* Platform indicator - for debugging */}
+            <span className="text-[10px] font-[400] leading-[12px] text-gray-400">
+              Platform: {platform}
+            </span>
+          </div>
           <button onClick={() => sendToClient("CLOSE_PREMIUM", {})}>
             <img src={Close} alt="close" />
           </button>
@@ -293,7 +531,9 @@ export default function Home() {
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
                   <span className="text-[18px] leading-[28px] font-[600] text-white">
-                    Weekly VIP
+                    {platform === "ios"
+                      ? weeklyVip?.title || "Weekly Member"
+                      : "Weekly VIP"}
                   </span>
                 </div>
                 <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
@@ -308,11 +548,13 @@ export default function Home() {
             <div className="col-span-3  p-4 rounded-lg">
               <div className="flex flex-col gap-1 items-center justify-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {weeklyVip?.price || "$19.99"}
+                  {renderSubscriptionPrice(weeklyVip) || "$19.99"}
                 </span>
-                <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
-                  {weeklyVip?.sale || "$24.99"}
-                </span>
+                {renderSubscriptionSale(weeklyVip) && (
+                  <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
+                    {renderSubscriptionSale(weeklyVip)}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -329,7 +571,9 @@ export default function Home() {
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
                   <span className="text-[18px] leading-[28px] font-[600] text-white">
-                    Monthly VIP
+                    {platform === "ios"
+                      ? monthlyVip?.title || "Monthly Member"
+                      : "Monthly VIP"}
                   </span>
                 </div>
                 <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
@@ -344,8 +588,13 @@ export default function Home() {
             <div className="col-span-3  p-4 rounded-lg">
               <div className="flex flex-col gap-1 items-center justify-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {monthlyVip?.price || "36.99$"}
+                  {renderSubscriptionPrice(monthlyVip) || "36.99$"}
                 </span>
+                {renderSubscriptionSale(monthlyVip) && (
+                  <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
+                    {renderSubscriptionSale(monthlyVip)}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -362,7 +611,9 @@ export default function Home() {
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
                   <span className="text-[18px] leading-[28px] font-[600] text-white">
-                    Yearly VIP
+                    {platform === "ios"
+                      ? yearlyVip?.title || "Yearly Member"
+                      : "Yearly VIP"}
                   </span>
                 </div>
                 <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
@@ -377,8 +628,13 @@ export default function Home() {
             <div className="col-span-3  p-4 rounded-lg">
               <div className="flex flex-col gap-1 items-center justify-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {yearlyVip?.price || "$249.99"}
+                  {renderSubscriptionPrice(yearlyVip) || "$249.99"}
                 </span>
+                {renderSubscriptionSale(yearlyVip) && (
+                  <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
+                    {renderSubscriptionSale(yearlyVip)}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -406,24 +662,15 @@ export default function Home() {
                     <span className="text-[18px] leading-[28px] font-[600] text-white">
                       {packageItem.coin}
                     </span>
-                    {packageItem.subTitle && (
-                      <>
-                        <span className="text-[18px] leading-[28px] font-[600] text-white">
-                          +
-                        </span>
-                        <span className="text-[16px] font-[400] leading-[24px] text-[#E2E2E2]">
-                          {packageItem.subTitle.replace("+ ", "")}
-                        </span>
-                      </>
-                    )}
+                    {renderCoinPackageBonus(packageItem)}
                   </div>
                   <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
                     {packageItem.priceTitle}
                   </span>
                   {/* Bonus Badge */}
-                  {packageItem.isSpecial && packageItem.specialTitle && (
+                  {shouldShowBonusBadge(packageItem) && (
                     <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-3 py-2 rounded-tl-[16px] rounded-br-[16px]">
-                      {packageItem.specialTitle}
+                      {renderBonusSpecialTitle(packageItem)}
                     </div>
                   )}
                 </div>
@@ -505,24 +752,15 @@ export default function Home() {
                     <span className="text-[18px] leading-[28px] font-[600] text-white">
                       {packageItem.coin}
                     </span>
-                    {packageItem.subTitle && (
-                      <>
-                        <span className="text-[18px] leading-[28px] font-[600] text-white">
-                          +
-                        </span>
-                        <span className="text-[16px] font-[400] leading-[24px] text-[#E2E2E2]">
-                          {packageItem.subTitle.replace("+ ", "")}
-                        </span>
-                      </>
-                    )}
+                    {renderCoinPackageBonus(packageItem)}
                   </div>
                   <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
                     {packageItem.priceTitle}
                   </span>
                   {/* Bonus Badge */}
-                  {packageItem.isSpecial && packageItem.specialTitle && (
+                  {shouldShowBonusBadge(packageItem) && (
                     <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-3 py-2 rounded-tl-[16px] rounded-br-[14px]">
-                      {packageItem.specialTitle}
+                      {renderBonusSpecialTitle(packageItem)}
                     </div>
                   )}
                 </div>
