@@ -558,7 +558,15 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full mb-10">
+    <div
+      className="flex flex-col h-screen w-full mb-10"
+      style={{
+        touchAction: "pan-y",
+        userSelect: "none",
+        WebkitUserSelect: "none",
+        WebkitTouchCallout: "none",
+      }}
+    >
       {/* Fixed Header */}
       <div className="flex-shrink-0">
         {/* DramaShort Premium */}
