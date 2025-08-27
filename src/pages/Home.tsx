@@ -258,7 +258,7 @@ export default function Home() {
             <div className="flex flex-row gap-1">
               <img src={Coin} alt="coin" />
               <span className="text-[14px] leading-[20px] font-[500] text-[#E2E2E2]">
-                {extraInfo.priceFor}
+                {extraInfo.priceFor || 100}
               </span>
             </div>
           </div>
@@ -269,7 +269,7 @@ export default function Home() {
             <div className="flex flex-row gap-1">
               <img src={Coin} alt="coin" />
               <span className="text-[14px] leading-[20px] font-[500] text-[#E2E2E2]">
-                {extraInfo.myCoin}
+                {extraInfo.myCoin || 0}
               </span>
             </div>
           </div>
