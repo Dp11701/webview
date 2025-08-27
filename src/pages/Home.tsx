@@ -244,7 +244,7 @@ export default function Home() {
           <span className="text-[18px] font-[600] leading-[28px] text-white">
             DramaShort Premium
           </span>
-          <button>
+          <button onClick={() => sendToClient("CLOSE_PREMIUM", {})}>
             <img src={Close} alt="close" />
           </button>
         </div>
