@@ -152,7 +152,7 @@ export default function Store() {
             "Unlimited access to all series for 1 year."}
         </span>
         <div className="flex flex-col items-start px-4 pt-4">
-          <div className="flex py-4 w-full gap-2 justify-start items-center border-b border-[#FFFFFF1A]">
+          <div className="flex py-4 w-full gap-2 justify-start items-center border-b border-[#FFFFFF1A] overflow-hidden">
             <img src={Infinite} alt="Infinite" />
             <span className="text-[16px] leading-[24px] font-[400] text-start text-[#E2E2E2]">
               Unlimited viewing
@@ -203,8 +203,8 @@ export default function Store() {
                   >
                     <div className="relative overflow-hidden">
                       <img
-                        src={episode.bannerUrl}
-                        alt={episode.title}
+                        src={movie.posterUrl}
+                        alt={movie.title}
                         className="w-full h-[160px] object-cover rounded-[8px]"
                       />
 
@@ -254,7 +254,7 @@ export default function Store() {
                     <div className="w-[60%] h-[1px] bg-[#FFFFFF]"></div>
                   </div>
                   <img
-                    src={movie.episodes[0]?.bannerUrl}
+                    src={movie.posterUrl}
                     alt={movie.title}
                     className="w-full h-[160px] object-cover rounded-[8px]"
                   />
