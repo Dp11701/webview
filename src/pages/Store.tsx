@@ -232,6 +232,44 @@ export default function Store() {
     }
   };
 
+  // Handler for close button
+  const handleClose = async () => {
+    try {
+      if (window.ikapp?.dismiss) {
+        // Use ikapp.dismiss if available
+        window.ikapp.dismiss();
+      } else {
+        // Fallback: send close event to client
+        await sendToClient("STORE_CLOSE", {
+          source: "store_page",
+          timestamp: Date.now(),
+        });
+      }
+    } catch (error) {
+      console.error("Close error:", error);
+    }
+  };
+
+  // Handler for restore purchases
+  const handleRestore = async () => {
+    try {
+      if (platform === PLATFORM.IOS && window.ikapp?.restorePurchase) {
+        // iOS: Use ikapp.restorePurchase
+        console.log("iOS: Calling ikapp.restorePurchase");
+        const result = await window.ikapp.restorePurchase();
+        console.log("iOS restore result:", result);
+      } else {
+        // Android or fallback: send restore event to client
+        await sendToClient("RESTORE_PURCHASE", {
+          source: "store_page",
+          timestamp: Date.now(),
+        });
+      }
+    } catch (error) {
+      console.error("Restore error:", error);
+    }
+  };
+
   // Initialize platform detection
   useEffect(() => {
     // Initialize localPromises if not exists
@@ -373,8 +411,16 @@ export default function Store() {
       <div className="flex-1 overflow-y-auto pb-[200px]">
         {/* header */}
         <div className="flex flex-row items-center justify-between px-4 py-4">
-          <img src={Close} alt="close" />
-          <span className="font-[400] text-[14px] leading-[20px] underline text-[#E2E2E2]">
+          <img
+            src={Close}
+            alt="close"
+            onClick={handleClose}
+            className="cursor-pointer"
+          />
+          <span
+            onClick={handleRestore}
+            className="font-[400] text-[14px] leading-[20px] underline text-[#E2E2E2] cursor-pointer"
+          >
             Restore
           </span>
         </div>
