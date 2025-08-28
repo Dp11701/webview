@@ -234,46 +234,36 @@ export default function Store() {
         </div>
 
         {/* Coming Soon Section */}
-        <div className="flex flex-col px-4 pt-6 pb-4">
-          <h2 className="text-[24px] font-[600] text-white mb-6">
+        <div className="flex flex-col items-start px-4 pt-4">
+          <span className="text-[16px] leading-[24px] font-[600] text-start text-[#E2E2E2] mb-4">
             Coming Soon
-          </h2>
+          </span>
+          {/* Movies on single scrollable row */}
+          <div
+            className="flex gap-4 overflow-x-auto w-full pb-2"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {data.map((movie) => (
+              <div key={movie.id} className="flex-shrink-0 w-[120px]">
+                <div className="relative overflow-hidden">
+                  {/* Date overlay */}
+                  <div className=" bg-transparent rounded-[4px]  py-1 flex flex-row gap-1 items-center justify-between">
+                    <span className="text-[12px] leading-[18px] font-[400] text-[#FFFFFF]">
+                      {formatReleaseDate(movie.releaseDate)}
+                    </span>
+                    <div className="w-[60%] h-[1px] bg-[#FFFFFF]"></div>
+                  </div>
+                  <img
+                    src={movie.episodes[0]?.bannerUrl}
+                    alt={movie.title}
+                    className="w-full h-[160px] object-cover rounded-[8px]"
+                  />
 
-          {/* Movies organized by date */}
-          <div className="space-y-6">
-            {Object.entries(groupedMovies).map(([date, movies]) => (
-              <div key={date}>
-                <div className="flex items-center mb-4">
-                  <div className="w-[1px] h-[16px] bg-white mr-3"></div>
-                  <span className="text-[14px] font-[400] text-white">
-                    {date}
-                  </span>
-                </div>
-                <div className="flex gap-3 overflow-x-auto pb-2">
-                  {movies.map((movie) => (
-                    <div key={movie.id} className="flex-shrink-0 w-[120px]">
-                      <div className="relative">
-                        <img
-                          src={movie.posterUrl}
-                          alt={movie.title}
-                          className="w-full h-[160px] object-cover rounded-[8px]"
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 rounded-b-[8px]">
-                          <p
-                            className="text-white text-[12px] font-[500] leading-[16px]"
-                            style={{
-                              overflow: "hidden",
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                            }}
-                          >
-                            {movie.title}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  <div className="mt-2">
+                    <p className="font-[500] text-[13px] leading-[18px] text-white">
+                      {movie.title}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
