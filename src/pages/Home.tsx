@@ -704,11 +704,11 @@ export default function Home() {
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
                   {renderSubscriptionPrice(monthlyVip) || "36.99$"}
                 </span>
-                {renderSubscriptionSale(monthlyVip) && (
+                {/* {renderSubscriptionSale(monthlyVip) && (
                   <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
                     {renderSubscriptionSale(monthlyVip)}
                   </span>
-                )}
+                )} */}
               </div>
             </div>
           </div>
@@ -744,11 +744,11 @@ export default function Home() {
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
                   {renderSubscriptionPrice(yearlyVip) || "$249.99"}
                 </span>
-                {renderSubscriptionSale(yearlyVip) && (
+                {/* {renderSubscriptionSale(yearlyVip) && (
                   <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
                     {renderSubscriptionSale(yearlyVip)}
                   </span>
-                )}
+                )} */}
               </div>
             </div>
           </div>

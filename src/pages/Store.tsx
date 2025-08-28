@@ -7,12 +7,28 @@ import Video from "../assets/icons/Video.svg";
 import Premium from "../assets/icons/Premium.svg";
 import Star from "../assets/icons/Star.svg";
 import { mock } from "../assets/data/mock";
+import { useComingSoonMovies, useVipMovies } from "../hooks/useVipMovies";
 
 export default function Store() {
   const [selectedPlan, setSelectedPlan] = useState("weekly");
 
-  const data = mock;
+  // Use TanStack Query to fetch VIP movies
+  const { data: vipMoviesData, isLoading, error } = useVipMovies();
+  const {
+    data: comingSoonMoviesData,
+    isLoading: isLoadingComingSoon,
+    error: errorComingSoon,
+  } = useComingSoonMovies();
 
+  // Use API data if available, otherwise fallback to mock data
+  const data = vipMoviesData?.statusCode === 200 ? vipMoviesData.data : mock;
+  const comingSoonMovies =
+    comingSoonMoviesData?.statusCode === 200 ? comingSoonMoviesData.data : mock;
+
+  // Debug logs
+  console.log("VIP Movies Data:", vipMoviesData);
+  console.log("Coming Soon Movies Data:", comingSoonMoviesData);
+  console.log("Final Coming Soon Movies:", comingSoonMovies);
   // Helper function to format release date
   const formatReleaseDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -20,19 +36,6 @@ export default function Store() {
     const day = date.getDate();
     return `${month}, ${day}`;
   };
-
-  // Group movies by release date
-  //   const groupedMovies = data.reduce(
-  //     (acc: { [key: string]: typeof data }, movie) => {
-  //       const dateKey = formatReleaseDate(movie.releaseDate);
-  //       if (!acc[dateKey]) {
-  //         acc[dateKey] = [];
-  //       }
-  //       acc[dateKey].push(movie);
-  //       return acc;
-  //     },
-  //     {}
-  //   );
 
   return (
     <div className="flex flex-col h-screen w-full relative bg-[#0D0D0E]">
@@ -189,48 +192,67 @@ export default function Store() {
           <span className="text-[16px] leading-[24px] font-[600] text-start text-[#E2E2E2] mb-4">
             VIP Exclusive
           </span>
+
+          {/* Loading state */}
+          {isLoading && (
+            <div className="flex items-center justify-center w-full py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FFEBC3]"></div>
+            </div>
+          )}
+
+          {/* Error state */}
+          {error && (
+            <div className="flex items-center justify-center w-full py-8">
+              <p className="text-[#E2E2E2] text-[14px]">
+                Failed to load VIP movies. Using offline content.
+              </p>
+            </div>
+          )}
+
           {/* Movies organized by date */}
-          <div
-            className="flex gap-4 overflow-x-auto w-full pb-2"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {data.map((movie) => (
-              <div key={movie.id} className="flex gap-3">
-                {movie.episodes.map((episode) => (
-                  <div
-                    key={`${movie.id}-${episode.id}`}
-                    className="flex-shrink-0 w-[120px]"
-                  >
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={movie.posterUrl}
-                        alt={movie.title}
-                        className="w-full h-[160px] object-cover rounded-[8px]"
-                      />
+          {!isLoading && (
+            <div
+              className="flex gap-4 overflow-x-auto w-full pb-2"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {data.map((movie) => (
+                <div key={movie.id} className="flex gap-3">
+                  {movie.episodes.map((episode) => (
+                    <div
+                      key={`${movie.id}-${episode.id}`}
+                      className="flex-shrink-0 w-[120px]"
+                    >
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={movie.posterUrl}
+                          alt={movie.title}
+                          className="w-full h-[160px] object-cover rounded-[8px]"
+                        />
 
-                      {/* VIP Corner Tag - Extra Large Triangle Top Right */}
-                      <div
-                        className="absolute top-0 right-0 w-[52px] h-[52px] bg-gradient-to-br from-[#FFEBC3] to-[#CA9834] rounded-tr-[8px]"
-                        style={{
-                          clipPath: "polygon(30% 0%, 100% 0%, 100% 70%)",
-                        }}
-                      >
-                        <span className="absolute top-[4px] right-[4px] text-[12px] leading-[18px]  font-[500] bg-gradient-to-r from-[#47331C] via-[#997040] to-[#4F3920] inline-block text-transparent bg-clip-text transform rotate-45">
-                          VIP
-                        </span>
-                      </div>
+                        {/* VIP Corner Tag - Extra Large Triangle Top Right */}
+                        <div
+                          className="absolute top-0 right-0 w-[52px] h-[52px] bg-gradient-to-br from-[#FFEBC3] to-[#CA9834] rounded-tr-[8px]"
+                          style={{
+                            clipPath: "polygon(30% 0%, 100% 0%, 100% 70%)",
+                          }}
+                        >
+                          <span className="absolute top-[4px] right-[4px] text-[12px] leading-[18px]  font-[500] bg-gradient-to-r from-[#47331C] via-[#997040] to-[#4F3920] inline-block text-transparent bg-clip-text transform rotate-45">
+                            VIP
+                          </span>
+                        </div>
 
-                      <div className="mt-2">
-                        <p className="font-[500] text-[13px] leading-[18px] text-white">
-                          {movie.title}
-                        </p>
+                        <div className="mt-2">
+                          <p className="font-[500] text-[13px] leading-[18px] text-white">
+                            {movie.title}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Coming Soon Section */}
@@ -238,36 +260,55 @@ export default function Store() {
           <span className="text-[16px] leading-[24px] font-[600] text-start text-[#E2E2E2] mb-4">
             Coming Soon
           </span>
-          {/* Movies on single scrollable row */}
-          <div
-            className="flex gap-4 overflow-x-auto w-full pb-2"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {data.map((movie) => (
-              <div key={movie.id} className="flex-shrink-0 w-[120px]">
-                <div className="relative overflow-hidden">
-                  {/* Date overlay */}
-                  <div className=" bg-transparent rounded-[4px]  py-1 flex flex-row gap-1 items-center justify-between">
-                    <span className="text-[12px] leading-[18px] font-[400] text-[#FFFFFF]">
-                      {formatReleaseDate(movie.releaseDate)}
-                    </span>
-                    <div className="w-[60%] h-[1px] bg-[#FFFFFF]"></div>
-                  </div>
-                  <img
-                    src={movie.posterUrl}
-                    alt={movie.title}
-                    className="w-full h-[160px] object-cover rounded-[8px]"
-                  />
 
-                  <div className="mt-2">
-                    <p className="font-[500] text-[13px] leading-[18px] text-white">
-                      {movie.title}
-                    </p>
+          {/* Loading state */}
+          {isLoadingComingSoon && (
+            <div className="flex items-center justify-center w-full py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FFEBC3]"></div>
+            </div>
+          )}
+
+          {/* Error state */}
+          {errorComingSoon && (
+            <div className="flex items-center justify-center w-full py-8">
+              <p className="text-[#E2E2E2] text-[14px]">
+                Failed to load coming soon movies. Using offline content.
+              </p>
+            </div>
+          )}
+
+          {/* Movies on single scrollable row */}
+          {!isLoadingComingSoon && (
+            <div
+              className="flex gap-4 overflow-x-auto w-full pb-2"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {comingSoonMovies.map((movie: any) => (
+                <div key={movie.id} className="flex-shrink-0 w-[120px]">
+                  <div className="relative overflow-hidden">
+                    {/* Date overlay */}
+                    <div className=" bg-transparent rounded-[4px]  py-1 flex flex-row gap-1 items-center justify-between">
+                      <span className="text-[12px] leading-[18px] font-[400] text-[#FFFFFF]">
+                        {formatReleaseDate(movie.releaseDate)}
+                      </span>
+                      <div className="w-[60%] h-[1px] bg-[#FFFFFF]"></div>
+                    </div>
+                    <img
+                      src={movie.posterUrl}
+                      alt={movie.title}
+                      className="w-full h-[160px] object-cover rounded-[8px]"
+                    />
+
+                    <div className="mt-2">
+                      <p className="font-[500] text-[13px] leading-[18px] text-white">
+                        {movie.title}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Tips and tricks */}
