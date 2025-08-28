@@ -22,17 +22,17 @@ export default function Store() {
   };
 
   // Group movies by release date
-  const groupedMovies = data.reduce(
-    (acc: { [key: string]: typeof data }, movie) => {
-      const dateKey = formatReleaseDate(movie.releaseDate);
-      if (!acc[dateKey]) {
-        acc[dateKey] = [];
-      }
-      acc[dateKey].push(movie);
-      return acc;
-    },
-    {}
-  );
+  //   const groupedMovies = data.reduce(
+  //     (acc: { [key: string]: typeof data }, movie) => {
+  //       const dateKey = formatReleaseDate(movie.releaseDate);
+  //       if (!acc[dateKey]) {
+  //         acc[dateKey] = [];
+  //       }
+  //       acc[dateKey].push(movie);
+  //       return acc;
+  //     },
+  //     {}
+  //   );
 
   return (
     <div className="flex flex-col h-screen w-full relative bg-[#0D0D0E]">
