@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Close from "../assets/icons/Close-no-background.svg";
 import Infinite from "../assets/icons/Infinite.svg";
 import Hd from "../assets/icons/Hd.svg";
@@ -8,9 +8,63 @@ import Premium from "../assets/icons/Premium.svg";
 import Star from "../assets/icons/Star.svg";
 import { mock } from "../assets/data/mock";
 import { useComingSoonMovies, useVipMovies } from "../hooks/useVipMovies";
+import { detectPlatform, type Platform } from "../utils/platformDetection";
+
+// Constants from iOS app script
+const PLATFORM = Object.freeze({
+  IOS: "ios",
+  ANDROID: "android",
+});
+
+// Android Product structure
+interface AndroidProduct {
+  productId: string;
+  coin: number;
+  index: number;
+  priceTitle: string;
+  subTitle: string;
+  specialTitle: string;
+  isSpecial: boolean;
+  price: string;
+  sale: string;
+}
+
+// iOS Product structure
+interface IOSProduct {
+  productId: string;
+  coin: number;
+  bonus: number;
+  index: number;
+  costIapId: string;
+  priceTitle: string;
+  title: string;
+  subTitle: string;
+  specialTitle?: string;
+  isSpecial?: boolean;
+}
+
+// Unified Product interface for internal use
+interface Product {
+  productId: string;
+  coin: number;
+  index: number;
+  priceTitle: string;
+  subTitle: string;
+  specialTitle: string;
+  isSpecial: boolean;
+  price?: string;
+  sale?: string;
+  bonus?: number;
+  title?: string;
+  costIapId?: string;
+}
 
 export default function Store() {
   const [selectedPlan, setSelectedPlan] = useState("weekly");
+  const [weeklyVip, setWeeklyVip] = useState<Product | null>(null);
+  const [monthlyVip, setMonthlyVip] = useState<Product | null>(null);
+  const [yearlyVip, setYearlyVip] = useState<Product | null>(null);
+  const [platform, setPlatform] = useState<Platform>("unknown");
 
   // Use TanStack Query to fetch VIP movies
   const { data: vipMoviesData, isLoading, error } = useVipMovies();
@@ -24,6 +78,282 @@ export default function Store() {
   const data = vipMoviesData?.statusCode === 200 ? vipMoviesData.data : mock;
   const comingSoonMovies =
     comingSoonMoviesData?.statusCode === 200 ? comingSoonMoviesData.data : mock;
+
+  // Utility functions to transform platform-specific data
+  const transformAndroidProduct = (androidProduct: AndroidProduct): Product => {
+    return {
+      productId: androidProduct.productId,
+      coin: androidProduct.coin,
+      index: androidProduct.index,
+      priceTitle: androidProduct.priceTitle,
+      subTitle: androidProduct.subTitle,
+      specialTitle: androidProduct.specialTitle,
+      isSpecial: androidProduct.isSpecial,
+      price: androidProduct.price,
+      sale: androidProduct.sale,
+    };
+  };
+
+  const transformIOSProduct = (iosProduct: IOSProduct): Product => {
+    return {
+      productId: iosProduct.productId,
+      coin: iosProduct.coin,
+      index: iosProduct.index,
+      priceTitle: iosProduct.priceTitle,
+      subTitle: iosProduct.subTitle,
+      specialTitle: iosProduct.specialTitle || "",
+      isSpecial: iosProduct.isSpecial || false,
+      bonus: iosProduct.bonus,
+      title: iosProduct.title,
+      costIapId: iosProduct.costIapId,
+    };
+  };
+
+  const processProductsBasedOnPlatform = (rawProducts: any[]): Product[] => {
+    if (platform === PLATFORM.ANDROID) {
+      return rawProducts.map((product: AndroidProduct) =>
+        transformAndroidProduct(product)
+      );
+    } else if (platform === PLATFORM.IOS) {
+      return rawProducts.map((product: IOSProduct) =>
+        transformIOSProduct(product)
+      );
+    } else {
+      // Unknown platform, try to handle both formats
+      return rawProducts.map((product: any) => {
+        if ("bonus" in product && "title" in product) {
+          // Looks like iOS format
+          return transformIOSProduct(product as IOSProduct);
+        } else {
+          // Assume Android format
+          return transformAndroidProduct(product as AndroidProduct);
+        }
+      });
+    }
+  };
+
+  const renderSubscriptionPrice = (subscription: Product | null) => {
+    if (platform === PLATFORM.IOS) {
+      return subscription?.priceTitle?.replace("%@", "Price") || "";
+    } else if (platform === PLATFORM.ANDROID) {
+      return subscription?.price || "";
+    }
+    return "";
+  };
+
+  const renderSubscriptionSale = (subscription: Product | null) => {
+    if (platform === PLATFORM.ANDROID && subscription?.sale) {
+      return subscription.sale;
+    }
+    return null;
+  };
+
+  // Async function to send events to client
+  async function sendToClient(event: string, payload: any) {
+    return new Promise((resolve, reject) => {
+      const eventId = crypto.randomUUID();
+      const payloadEvent = {
+        eventId: eventId,
+        event: event,
+        payload: {
+          ...payload,
+          platform: platform, // Include platform info in payload
+        },
+      };
+      window.localPromises[eventId] = { resolve, reject };
+
+      console.log(`Sending to ${platform}:`, payloadEvent);
+
+      // Send based on detected platform
+      if (platform === PLATFORM.IOS && window.webkit?.messageHandlers?.event) {
+        window.webkit.messageHandlers.event.postMessage(payloadEvent);
+      } else if (
+        platform === PLATFORM.ANDROID &&
+        (window as any).AndroidBridge?.postMessage
+      ) {
+        (window as any).AndroidBridge.postMessage(JSON.stringify(payloadEvent));
+      } else {
+        // Fallback: try both methods
+        if (window.webkit?.messageHandlers?.event) {
+          window.webkit.messageHandlers.event.postMessage(payloadEvent);
+        } else if ((window as any).AndroidBridge?.postMessage) {
+          (window as any).AndroidBridge.postMessage(
+            JSON.stringify(payloadEvent)
+          );
+        } else {
+          console.warn("No communication bridge found for platform:", platform);
+          reject(new Error("No communication bridge available"));
+        }
+      }
+    });
+  }
+
+  // Handler for VIP activation
+  const handleVipActivation = async () => {
+    // Get the selected product based on current plan
+    let selectedProduct: Product | null = null;
+    switch (selectedPlan) {
+      case "weekly":
+        selectedProduct = weeklyVip;
+        break;
+      case "monthly":
+        selectedProduct = monthlyVip;
+        break;
+      case "yearly":
+        selectedProduct = yearlyVip;
+        break;
+    }
+
+    if (selectedProduct) {
+      if (platform === PLATFORM.IOS) {
+        // iOS: Use ikapp.purchaseProduct following the iOS script flow
+        try {
+          if (window.ikapp?.purchaseProduct) {
+            console.log(
+              "iOS: Calling ikapp.purchaseProduct for:",
+              selectedProduct.productId
+            );
+            const result = await window.ikapp.purchaseProduct(
+              selectedProduct.productId
+            );
+            console.log("iOS purchase result:", result);
+          } else {
+            console.warn("iOS: ikapp.purchaseProduct not available");
+          }
+        } catch (error) {
+          console.error("iOS purchase error:", error);
+        }
+      } else {
+        // Android: Send selection event
+        await sendToClient("PLAN_SELECTED", {
+          productId: selectedProduct.productId,
+        });
+      }
+    }
+  };
+
+  // Initialize platform detection
+  useEffect(() => {
+    // Initialize localPromises if not exists
+    if (!window.localPromises) {
+      window.localPromises = {};
+    }
+
+    let detectedPlatform: Platform = "unknown";
+    if (window.ikapp?.platform) {
+      detectedPlatform = window.ikapp.platform as Platform;
+      console.log("Platform from ikapp:", detectedPlatform);
+    } else {
+      detectedPlatform = detectPlatform();
+      console.log("Platform from detection:", detectedPlatform);
+    }
+
+    setPlatform(detectedPlatform);
+
+    if (window.ikapp?.onPlatformChanged) {
+      window.ikapp.onPlatformChanged = (newPlatform: string) => {
+        console.log("Platform changed to:", newPlatform);
+        setPlatform(newPlatform as Platform);
+      };
+    }
+  }, []);
+
+  // Load products from window.ikapp
+  useEffect(() => {
+    const checkForData = () => {
+      if ((window as any).ikapp?.products) {
+        const rawProducts = (window as any).ikapp.products;
+        console.log("Raw products found:", rawProducts);
+        console.log("Processing for platform:", platform);
+
+        const processedProducts = processProductsBasedOnPlatform(rawProducts);
+        console.log("Processed products:", processedProducts);
+
+        // Filter subscription products (coin = 0)
+        const subscriptionProducts = processedProducts.filter(
+          (product: Product) => product.coin === 0
+        );
+
+        // Find subscription products based on platform
+        let weeklyVip: Product | undefined;
+        let monthlyVip: Product | undefined;
+        let yearlyVip: Product | undefined;
+
+        if (platform === PLATFORM.ANDROID) {
+          weeklyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "idrama_sub_weekly_vip_2"
+          );
+          monthlyVip = subscriptionProducts.find(
+            (product: Product) => product.productId === "monthly_vip_1"
+          );
+          yearlyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "idrama_sub_yearly_vip_1"
+          );
+        } else if (platform === PLATFORM.IOS) {
+          weeklyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "iOS_Short_Drama_sub_weekly_vip_2" &&
+              (product.priceTitle?.includes("Per week") ||
+                product.subTitle?.includes("1 week"))
+          );
+          monthlyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "iOS_Short_Drama_sub_weekly_vip_2" &&
+              (product.priceTitle?.includes("Per Month") ||
+                product.subTitle?.includes("1 month"))
+          );
+          yearlyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "iOS_Short_Drama_sub_yearly_vip_1" &&
+              (product.priceTitle?.includes("Per Year") ||
+                product.subTitle?.includes("1 year"))
+          );
+        } else {
+          // Fallback for unknown platform
+          weeklyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId.includes("weekly") ||
+              product.productId === "idrama_sub_weekly_vip_2"
+          );
+          monthlyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId === "monthly_vip_1" ||
+              product.subTitle?.includes("month")
+          );
+          yearlyVip = subscriptionProducts.find(
+            (product: Product) =>
+              product.productId.includes("yearly") ||
+              product.productId === "idrama_sub_yearly_vip_1"
+          );
+        }
+
+        if (weeklyVip) {
+          setWeeklyVip(weeklyVip);
+        }
+        if (monthlyVip) {
+          setMonthlyVip(monthlyVip);
+        }
+        if (yearlyVip) {
+          setYearlyVip(yearlyVip);
+        }
+      }
+    };
+
+    // Check immediately on mount
+    checkForData();
+
+    // Set up polling interval
+    const interval = setInterval(() => {
+      checkForData();
+    }, 500);
+
+    // Cleanup
+    return () => {
+      clearInterval(interval);
+    };
+  }, [platform]); // Re-run when platform changes
 
   // Debug logs
   console.log("VIP Movies Data:", vipMoviesData);
@@ -82,12 +412,10 @@ export default function Store() {
             <div className="px-4 rounded-lg">
               <div className="flex flex-row gap-1 items-center justify-center ">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {/* {weeklyVip?.price_title || "$19.99"} */}
-                  $19.99
+                  {renderSubscriptionPrice(weeklyVip) || "$19.99"}
                 </span>
                 <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
-                  {/* {weeklyVip?.cost_title || "$24.99"} */}
-                  $24.99
+                  {renderSubscriptionSale(weeklyVip) || "$24.99"}
                 </span>
               </div>
             </div>
@@ -112,8 +440,7 @@ export default function Store() {
             <div className="px-4 rounded-lg">
               <div className="flex flex-row justify-between gap-1 items-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {/* {monthlyVip?.price_title || "36.99$"} */}
-                  36.99$
+                  {renderSubscriptionPrice(monthlyVip) || "$36.99"}
                 </span>
               </div>
             </div>
@@ -138,8 +465,7 @@ export default function Store() {
             <div className="px-4 rounded-lg">
               <div className="flex flex-row justify-between gap-1 items-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {/* {yearlyVip?.price_title || "$249.99"} */}
-                  $249.99
+                  {renderSubscriptionPrice(yearlyVip) || "$249.99"}
                 </span>
               </div>
             </div>
@@ -370,7 +696,10 @@ export default function Store() {
               </span>
             </span>
           </div>
-          <button className="flex items-center justify-center w-full h-[48px] bg-gradient-to-r from-[#FFEBC3] to-[#CA9834] rounded-[16px] text-[18px] leading-[28px] font-[600] text-[#47331C] py-4">
+          <button
+            onClick={handleVipActivation}
+            className="flex items-center justify-center w-full h-[48px] bg-gradient-to-r from-[#FFEBC3] to-[#CA9834] rounded-[16px] text-[18px] leading-[28px] font-[600] text-[#47331C] py-4"
+          >
             Activate VIP
           </button>
           <span className="text-[14px] font-[400] leading-[20px] text-[#9E9E9F] mt-2 pb-4">
