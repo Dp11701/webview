@@ -576,10 +576,6 @@ export default function Home() {
             <span className="text-[18px] font-[600] leading-[28px] text-white">
               DramaShort Premium
             </span>
-            {/* Platform indicator - for debugging */}
-            <span className="text-[10px] font-[400] leading-[12px] text-gray-400">
-              Platform: {platform}
-            </span>
           </div>
           <button
             onClick={() => {
