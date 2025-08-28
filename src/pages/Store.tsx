@@ -407,9 +407,8 @@ export default function Store() {
 
   return (
     <div className="flex flex-col h-screen w-full relative bg-[#0D0D0E]">
-      {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto pb-[200px]">
-        {/* header */}
+      {/* Fixed header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-[#0D0D0E] backdrop-blur-sm ">
         <div className="flex flex-row items-center justify-between px-4 py-4">
           <img
             src={Close}
@@ -424,6 +423,10 @@ export default function Store() {
             Restore
           </span>
         </div>
+      </div>
+
+      {/* Scrollable content with top padding to account for fixed header */}
+      <div className="flex-1 overflow-y-auto pb-[200px] pt-[72px]">
         {/* title */}
         <div className="flex flex-col items-center px-10 mb-10 w-full">
           <span className="text-[20px] leading-[28px] font-[600] text-center w-[70vw] bg-gradient-to-r from-[#FFEBC3] to-[#CA9834] inline-block text-transparent bg-clip-text">
@@ -520,7 +523,11 @@ export default function Store() {
         {/* Scrollable Content */}
         <span className="text-[14px] leading-[20px] font-[400] text-start text-[#9E9E9F] mx-4">
           {selectedPlan === "weekly" &&
-            "$14.99 for the first week, then $19.99/Week"}
+            `${renderSubscriptionPrice(
+              weeklyVip
+            )} for the first week, then ${renderSubscriptionPrice(
+              weeklyVip
+            )}/Week`}
           {selectedPlan === "monthly" &&
             "Unlimited access to all series for 1 month."}
           {selectedPlan === "yearly" &&
