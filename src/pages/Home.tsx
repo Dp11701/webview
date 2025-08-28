@@ -561,10 +561,11 @@ export default function Home() {
     <div
       className="flex flex-col h-screen w-full mb-10"
       style={{
-        touchAction: "pan-y",
+        touchAction: "auto",
         userSelect: "none",
         WebkitUserSelect: "none",
         WebkitTouchCallout: "none",
+        WebkitOverflowScrolling: "touch",
       }}
     >
       {/* Fixed Header */}
@@ -621,7 +622,14 @@ export default function Home() {
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto">
+      <div
+        className="flex-1 overflow-y-auto"
+        style={{
+          minHeight: 0,
+          WebkitOverflowScrolling: "touch",
+          overscrollBehavior: "contain",
+        }}
+      >
         {/* Subscription */}
         <div className="flex flex-col gap-4 px-4 py-4">
           <div
@@ -643,7 +651,11 @@ export default function Home() {
                   </span>
                 </div>
                 <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
-                  {weeklyVip?.subTitle ||
+                  {`${weeklyVip?.subTitle} ${renderSubscriptionPrice(
+                    weeklyVip
+                  )}  for the first month, then ${renderSubscriptionSale(
+                    weeklyVip
+                  )}/month` ||
                     "Unlimited access to all series for 1 week $19.99 for the first month, then $24.99/month"}
                 </span>
                 <span className="font-[500] text-[9px] leading-[12px] text-white">
