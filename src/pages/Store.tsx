@@ -233,22 +233,22 @@ export default function Store() {
   };
 
   // Handler for close button
-  const handleClose = async () => {
-    try {
-      if (window.ikapp?.dismiss) {
-        // Use ikapp.dismiss if available
-        window.ikapp.dismiss();
-      } else {
-        // Fallback: send close event to client
-        await sendToClient("STORE_CLOSE", {
-          source: "store_page",
-          timestamp: Date.now(),
-        });
-      }
-    } catch (error) {
-      console.error("Close error:", error);
-    }
-  };
+  //   const handleClose = async () => {
+  //     try {
+  //       if (window.ikapp?.dismiss) {
+  //         // Use ikapp.dismiss if available
+  //         window.ikapp.dismiss();
+  //       } else {
+  //         // Fallback: send close event to client
+  //         await sendToClient("STORE_CLOSE", {
+  //           source: "store_page",
+  //           timestamp: Date.now(),
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.error("Close error:", error);
+  //     }
+  //   };
 
   // Handler for restore purchases
   const handleRestore = async () => {
