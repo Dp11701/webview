@@ -649,9 +649,9 @@ export default function Home() {
                 <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
                   {`${weeklyVip?.subTitle} ${renderSubscriptionPrice(
                     weeklyVip
-                  )}  for the first month, then ${renderSubscriptionSale(
+                  )}  for the first week, then ${renderSubscriptionSale(
                     weeklyVip
-                  )}/month` ||
+                  )}/week` ||
                     "Unlimited access to all series for 1 week $19.99 for the first month, then $24.99/month"}
                 </span>
                 <span className="font-[500] text-[9px] leading-[12px] text-white">
