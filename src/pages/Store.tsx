@@ -525,7 +525,7 @@ export default function Store() {
           {selectedPlan === "weekly" &&
             `${renderSubscriptionPrice(
               weeklyVip
-            )} for the first week, then ${renderSubscriptionPrice(
+            )} for the first week, then ${renderSubscriptionSale(
               weeklyVip
             )}/Week`}
           {selectedPlan === "monthly" &&
