@@ -1,10 +1,41 @@
 @import "tailwindcss";
 
+/* Global rules to prevent text selection and zoom on mobile */
+*, *::before, *::after {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Allow text selection for input fields where needed */
+input, textarea {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  touch-action: manipulation;
+}
+
 body{
   background-color: #141415;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Disable text selection completely */
   user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+  /* Disable touch actions that can cause zoom */
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  
   overflow-x: hidden;
   overscroll-behavior: contain;
   -webkit-overscroll-behavior: contain;
