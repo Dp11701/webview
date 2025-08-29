@@ -434,7 +434,7 @@ export default function Store() {
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           <div
-            className={`flex flex-col gap-2 items-center ${
+            className={`flex flex-col gap-2 items-center  justify-center ${
               selectedPlan === "weekly"
                 ? "border-gradient"
                 : "border-gradient-alt"
