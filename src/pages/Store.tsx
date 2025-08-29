@@ -249,9 +249,7 @@ export default function Store() {
         // iOS: Use ikapp.purchaseProduct following the iOS script flow
         try {
           if (window.ikapp?.purchaseProduct) {
-            const result = await window.ikapp.purchaseProduct(
-              selectedProduct.productId
-            );
+            await window.ikapp.purchaseProduct(selectedProduct.productId);
           } else {
             console.warn("iOS: ikapp.purchaseProduct not available");
           }
