@@ -413,7 +413,13 @@ export default function Store() {
           <img
             src={Close}
             alt="close"
-            onClick={handleClose}
+            onClick={() => {
+              if (platform === PLATFORM.IOS && window.ikapp?.dismiss) {
+                window.ikapp.dismiss();
+              } else {
+                sendToClient("CLOSE_PREMIUM", {});
+              }
+            }}
             className="cursor-pointer"
           />
           <span
