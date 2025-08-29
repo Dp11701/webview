@@ -9,6 +9,7 @@ import Star from "../assets/icons/Star.svg";
 import { mock } from "../assets/data/mock";
 import { useComingSoonMovies, useVipMovies } from "../hooks/useVipMovies";
 import { detectPlatform, type Platform } from "../utils/platformDetection";
+import { trackingIntro } from "../utils/FirebaseUtils";
 
 // Constants from iOS app script
 const PLATFORM = Object.freeze({
@@ -27,6 +28,7 @@ interface AndroidProduct {
   isSpecial: boolean;
   price: string;
   sale: string;
+  currency: string;
 }
 
 // iOS Product structure
@@ -41,6 +43,7 @@ interface IOSProduct {
   subTitle: string;
   specialTitle?: string;
   isSpecial?: boolean;
+  currency: string;
 }
 
 // Unified Product interface for internal use
@@ -57,6 +60,14 @@ interface Product {
   bonus?: number;
   title?: string;
   costIapId?: string;
+  currency?: string;
+}
+
+interface ExtraInfo {
+  myCoin: number;
+  priceFor: number;
+  film_id: number;
+  episode: number;
 }
 
 export default function Store() {
@@ -65,6 +76,12 @@ export default function Store() {
   const [monthlyVip, setMonthlyVip] = useState<Product | null>(null);
   const [yearlyVip, setYearlyVip] = useState<Product | null>(null);
   const [platform, setPlatform] = useState<Platform>("unknown");
+  const [extraInfo, setExtraInfo] = useState<ExtraInfo>({
+    myCoin: 0,
+    priceFor: 100,
+    film_id: 0,
+    episode: 0,
+  });
 
   // Use TanStack Query to fetch VIP movies
   const { data: vipMoviesData, isLoading, error } = useVipMovies();
@@ -91,6 +108,7 @@ export default function Store() {
       isSpecial: androidProduct.isSpecial,
       price: androidProduct.price,
       sale: androidProduct.sale,
+      currency: androidProduct.currency,
     };
   };
 
@@ -106,6 +124,7 @@ export default function Store() {
       bonus: iosProduct.bonus,
       title: iosProduct.title,
       costIapId: iosProduct.costIapId,
+      currency: iosProduct.currency,
     };
   };
 
@@ -188,6 +207,14 @@ export default function Store() {
     });
   }
 
+  const handleTracking = (event: string, params: any) => {
+    trackingIntro(event, "sdk_premium_track", params);
+  };
+
+  const handlePlanSelection = (plan: "weekly" | "monthly" | "yearly") => {
+    setSelectedPlan(plan);
+  };
+
   // Handler for VIP activation
   const handleVipActivation = async () => {
     // Get the selected product based on current plan
@@ -205,6 +232,19 @@ export default function Store() {
     }
 
     if (selectedProduct) {
+      // Track VIP activation
+      handleTracking("select_product", {
+        action_name: "select_product",
+        premium_screen_name: "iap_unlock_episode_ver1",
+        product_id: selectedProduct.productId,
+        product_type: selectedPlan,
+        price:
+          renderSubscriptionPrice(selectedProduct)?.replace("$", "") || "0",
+        currency: selectedProduct.currency || "USD",
+        film_id: extraInfo.film_id,
+        episode: extraInfo.episode,
+      });
+
       if (platform === PLATFORM.IOS) {
         // iOS: Use ikapp.purchaseProduct following the iOS script flow
         try {
@@ -363,6 +403,13 @@ export default function Store() {
           setYearlyVip(yearlyVip);
         }
       }
+
+      // Check for extraInfo
+      if ((window as any).ikapp?.extraInfo) {
+        const extraInfoData = (window as any).ikapp.extraInfo;
+        console.log("ExtraInfo found:", extraInfoData);
+        setExtraInfo(extraInfoData);
+      }
     };
 
     // Check immediately on mount
@@ -439,7 +486,7 @@ export default function Store() {
                 ? "border-gradient"
                 : "border-gradient-alt"
             } rounded-[16px] p-1 min-w-[40vw] h-auto py-4 cursor-pointer`}
-            onClick={() => setSelectedPlan("weekly")}
+            onClick={() => handlePlanSelection("weekly")}
           >
             <div className="px-4 rounded-lg">
               <div className="flex flex-col gap-2">
@@ -467,7 +514,7 @@ export default function Store() {
                 ? "border-gradient"
                 : "border-gradient-alt"
             } rounded-[16px] p-1 min-w-[40vw] flex flex-col justify-center items-center py-4 cursor-pointer`}
-            onClick={() => setSelectedPlan("monthly")}
+            onClick={() => handlePlanSelection("monthly")}
           >
             <div className="px-4 rounded-lg">
               <div className="flex flex-col gap-2">
@@ -492,7 +539,7 @@ export default function Store() {
                 ? "border-gradient"
                 : "border-gradient-alt"
             } rounded-[16px] p-1 min-w-[40vw] py-4 flex flex-col justify-center items-center cursor-pointer`}
-            onClick={() => setSelectedPlan("yearly")}
+            onClick={() => handlePlanSelection("yearly")}
           >
             <div className="px-4 rounded-lg">
               <div className="flex flex-col gap-2">

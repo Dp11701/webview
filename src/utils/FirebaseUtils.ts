@@ -73,7 +73,7 @@ export const trackingIntro = async (
     console.log("Tracking event:", params);
 
     // Log the event
-    await logEvent(analytics, "screen_active", params);
+    await logEvent(analytics, "select_product", params);
 
     console.log("Event tracked successfully");
   } catch (error) {

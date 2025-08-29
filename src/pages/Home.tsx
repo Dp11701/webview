@@ -3,6 +3,7 @@ import Close from "../assets/icons/Close.svg";
 import Coin from "../assets/icons/Coin.svg";
 import Crown from "../assets/icons/crown.svg";
 import { detectPlatform, type Platform } from "../utils/platformDetection";
+import { trackingIntro } from "../utils/FirebaseUtils";
 
 // Constants from iOS app script
 const PLATFORM = Object.freeze({
@@ -21,6 +22,7 @@ interface AndroidProduct {
   isSpecial: boolean;
   price: string;
   sale: string;
+  currency: string;
 }
 
 // iOS Product structure
@@ -35,6 +37,7 @@ interface IOSProduct {
   subTitle: string;
   specialTitle: string;
   isSpecial: boolean;
+  currency: string;
 }
 
 // Unified Product interface for internal use
@@ -51,11 +54,14 @@ interface Product {
   bonus?: number;
   title?: string;
   costIapId?: string;
+  currency?: string;
 }
 
 interface ExtraInfo {
   myCoin: number;
   priceFor: number;
+  film_id: number;
+  episode: number;
 }
 
 // Declare global window properties (matching iOS script)
@@ -111,6 +117,8 @@ export default function Home() {
   const [extraInfo, setExtraInfo] = useState<ExtraInfo>({
     myCoin: 0,
     priceFor: 100,
+    film_id: 0,
+    episode: 0,
   });
   const [platform, setPlatform] = useState<Platform>("unknown");
 
@@ -126,6 +134,7 @@ export default function Home() {
       isSpecial: androidProduct.isSpecial,
       price: androidProduct.price,
       sale: androidProduct.sale,
+      currency: androidProduct.currency,
     };
   };
 
@@ -143,6 +152,7 @@ export default function Home() {
       costIapId: iosProduct.costIapId,
       // For iOS, we don't have price/sale fields directly
       // They might be embedded in priceTitle with %@ placeholder
+      currency: iosProduct.currency,
     };
   };
 
@@ -497,6 +507,19 @@ export default function Home() {
     }
 
     if (selectedProduct) {
+      // Track plan selection
+      handleTracking("select_product", {
+        action_name: "select_product",
+        premium_screen_name: "iap_unlock_episode_ver1",
+        product_id: selectedProduct.productId,
+        product_type: plan,
+        price:
+          renderSubscriptionPrice(selectedProduct)?.replace("$", "") || "0",
+        currency: selectedProduct.currency || "USD",
+        film_id: extraInfo.film_id,
+        episode: extraInfo.episode,
+      });
+
       if (platform === PLATFORM.IOS) {
         // iOS: Use ikapp.purchaseProduct following the iOS script flow
         try {
@@ -524,12 +547,28 @@ export default function Home() {
     }
   };
 
+  const handleTracking = (event: string, params: any) => {
+    trackingIntro(event, "sdk_premium_track", params);
+  };
+
   const handleCoinPackageSelection = async (index: number) => {
     setSelectedCoinPackage(index);
 
     // Get the selected coin package
     const selectedPackage = coinPackages[index];
     if (selectedPackage) {
+      // Track coin package selection
+      handleTracking("select_product", {
+        action_name: "select_product",
+        premium_screen_name: "iap_unlock_episode_ver1",
+        product_id: selectedPackage.productId,
+        product_type: "iap",
+        price: selectedPackage.priceTitle?.replace("$", "") || "0",
+        currency: selectedPackage.currency || "USD",
+        film_id: extraInfo.film_id,
+        episode: extraInfo.episode,
+      });
+
       if (platform === PLATFORM.IOS) {
         // iOS: Use ikapp.purchaseProduct following the iOS script flow
         try {
