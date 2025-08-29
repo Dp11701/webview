@@ -330,24 +330,10 @@ export default function Store() {
               product.productId === "idrama_sub_yearly_vip_1"
           );
         } else if (platform === PLATFORM.IOS) {
-          weeklyVip = subscriptionProducts.find(
-            (product: Product) =>
-              product.productId === "iOS_Short_Drama_sub_weekly_vip_2" &&
-              (product.priceTitle?.includes("Per week") ||
-                product.subTitle?.includes("1 week"))
-          );
-          monthlyVip = subscriptionProducts.find(
-            (product: Product) =>
-              product.productId === "iOS_Short_Drama_sub_weekly_vip_2" &&
-              (product.priceTitle?.includes("Per Month") ||
-                product.subTitle?.includes("1 month"))
-          );
-          yearlyVip = subscriptionProducts.find(
-            (product: Product) =>
-              product.productId === "iOS_Short_Drama_sub_yearly_vip_1" &&
-              (product.priceTitle?.includes("Per Year") ||
-                product.subTitle?.includes("1 year"))
-          );
+          // Map iOS products by array index order instead of productId
+          weeklyVip = subscriptionProducts[0]; // First item = Weekly
+          monthlyVip = subscriptionProducts[1]; // Second item = Monthly
+          yearlyVip = subscriptionProducts[2]; // Third item = Yearly
         } else {
           // Fallback for unknown platform
           weeklyVip = subscriptionProducts.find(
