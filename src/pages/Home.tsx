@@ -636,7 +636,7 @@ export default function Home() {
             } rounded-[16px] p-1`}
             onClick={() => handlePlanSelection("weekly")}
           >
-            <div className="col-span-9 p-4 rounded-lg">
+            <div className="col-span-8 p-4 rounded-lg">
               <div className="flex flex-col gap-2">
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
@@ -659,7 +659,7 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            <div className="col-span-3  p-4 rounded-lg">
+            <div className="col-span-4  p-4 rounded-lg">
               <div className="flex flex-col gap-1 items-center justify-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
                   {renderSubscriptionPrice(weeklyVip) || "$19.99"}
@@ -680,7 +680,7 @@ export default function Home() {
             } rounded-[16px] p-1`}
             onClick={() => handlePlanSelection("monthly")}
           >
-            <div className="col-span-9 p-4 rounded-lg">
+            <div className="col-span-8 p-4 rounded-lg">
               <div className="flex flex-col gap-2">
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
@@ -699,7 +699,7 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            <div className="col-span-3  p-4 rounded-lg">
+            <div className="col-span-4  p-4 rounded-lg">
               <div className="flex flex-col gap-1 items-center justify-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
                   {renderSubscriptionPrice(monthlyVip) || "36.99$"}
@@ -720,7 +720,7 @@ export default function Home() {
             } rounded-[16px] p-1`}
             onClick={() => handlePlanSelection("yearly")}
           >
-            <div className="col-span-9 p-4 rounded-lg">
+            <div className="col-span-8 p-4 rounded-lg">
               <div className="flex flex-col gap-2">
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
@@ -739,7 +739,7 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            <div className="col-span-3  p-4 rounded-lg">
+            <div className="col-span-4  p-4 rounded-lg">
               <div className="flex flex-col gap-1 items-center justify-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
                   {renderSubscriptionPrice(yearlyVip) || "$249.99"}
