@@ -505,21 +505,18 @@ export default function Home() {
         selectedProduct = yearlyVip;
         break;
     }
-
+    // Track plan selection
+    handleTracking("select_product", {
+      action_name: "select_product",
+      premium_screen_name: "iap_unlock_episode_ver1",
+      product_id: selectedPlan,
+      product_type: plan,
+      price: renderSubscriptionPrice(selectedProduct)?.replace("$", "") || "0",
+      currency: selectedProduct?.currency || "USD",
+      film_id: extraInfo.film_id,
+      episode: extraInfo.episode,
+    });
     if (selectedProduct) {
-      // Track plan selection
-      handleTracking("select_product", {
-        action_name: "select_product",
-        premium_screen_name: "iap_unlock_episode_ver1",
-        product_id: selectedProduct.productId,
-        product_type: plan,
-        price:
-          renderSubscriptionPrice(selectedProduct)?.replace("$", "") || "0",
-        currency: selectedProduct.currency || "USD",
-        film_id: extraInfo.film_id,
-        episode: extraInfo.episode,
-      });
-
       if (platform === PLATFORM.IOS) {
         // iOS: Use ikapp.purchaseProduct following the iOS script flow
         try {
@@ -556,18 +553,18 @@ export default function Home() {
 
     // Get the selected coin package
     const selectedPackage = coinPackages[index];
+    handleTracking("select_product", {
+      action_name: "select_product",
+      premium_screen_name: "iap_unlock_episode_ver1",
+      product_id: selectedCoinPackage,
+      product_type: "iap",
+      price: selectedPackage.priceTitle?.replace("$", "") || "0",
+      currency: selectedPackage.currency || "USD",
+      film_id: extraInfo.film_id,
+      episode: extraInfo.episode,
+    });
     if (selectedPackage) {
       // Track coin package selection
-      handleTracking("select_product", {
-        action_name: "select_product",
-        premium_screen_name: "iap_unlock_episode_ver1",
-        product_id: selectedPackage.productId,
-        product_type: "iap",
-        price: selectedPackage.priceTitle?.replace("$", "") || "0",
-        currency: selectedPackage.currency || "USD",
-        film_id: extraInfo.film_id,
-        episode: extraInfo.episode,
-      });
 
       if (platform === PLATFORM.IOS) {
         // iOS: Use ikapp.purchaseProduct following the iOS script flow
