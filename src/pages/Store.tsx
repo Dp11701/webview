@@ -249,14 +249,9 @@ export default function Store() {
         // iOS: Use ikapp.purchaseProduct following the iOS script flow
         try {
           if (window.ikapp?.purchaseProduct) {
-            console.log(
-              "iOS: Calling ikapp.purchaseProduct for:",
-              selectedProduct.productId
-            );
             const result = await window.ikapp.purchaseProduct(
               selectedProduct.productId
             );
-            console.log("iOS purchase result:", result);
           } else {
             console.warn("iOS: ikapp.purchaseProduct not available");
           }
@@ -341,11 +336,7 @@ export default function Store() {
     const checkForData = () => {
       if ((window as any).ikapp?.products) {
         const rawProducts = (window as any).ikapp.products;
-        console.log("Raw products found:", rawProducts);
-        console.log("Processing for platform:", platform);
-
         const processedProducts = processProductsBasedOnPlatform(rawProducts);
-        console.log("Processed products:", processedProducts);
 
         // Filter subscription products (coin = 0)
         const subscriptionProducts = processedProducts.filter(
@@ -407,7 +398,6 @@ export default function Store() {
       // Check for extraInfo
       if ((window as any).ikapp?.extraInfo) {
         const extraInfoData = (window as any).ikapp.extraInfo;
-        console.log("ExtraInfo found:", extraInfoData);
         setExtraInfo(extraInfoData);
       }
     };
@@ -426,10 +416,6 @@ export default function Store() {
     };
   }, [platform]); // Re-run when platform changes
 
-  // Debug logs
-  console.log("VIP Movies Data:", vipMoviesData);
-  console.log("Coming Soon Movies Data:", comingSoonMoviesData);
-  console.log("Final Coming Soon Movies:", comingSoonMovies);
   // Helper function to format release date
   const formatReleaseDate = (dateString: string) => {
     const date = new Date(dateString);
