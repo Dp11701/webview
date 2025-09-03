@@ -1003,8 +1003,8 @@ export default function Wallet() {
         <div className="flex flex-col gap-2 text-[12px] leading-[18px] font-[400] text-[#E2E2E2] px-4 text-start mb-10">
           <span>Tips</span>
           <span>
-            1.Dramashort offers both free and paid content. You can choose what
-            to unlock.
+            1.DramaReels both free and paid content. You can choose what to
+            unlock.
           </span>
           <span>
             2.Reward Coins can be earned through tasks and top-up bonuses, and
@@ -1015,8 +1015,7 @@ export default function Wallet() {
             content.
           </span>
           <span>
-            4.Privilege: Enjoy unlimited access to Dramashort series during
-            subscription.
+            4.Privilege: Enjoy unlimited access DramaReels during subscription.
           </span>
           <span>
             5. Activation: Subscriptions activate within 24 hours of purchase,

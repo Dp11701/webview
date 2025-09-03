@@ -611,7 +611,7 @@ export default function Home() {
         <div className="flex flex-row items-center justify-between bg-gradient-to-b from-[#5C4E3E] to-[#141415] p-4">
           <div className="flex flex-col">
             <span className="text-[18px] font-[600] leading-[28px] text-white">
-              DramaShort Premium
+              DramaReels Premium
             </span>
           </div>
           <button

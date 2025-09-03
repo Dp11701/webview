@@ -1,6 +1,6 @@
 import type { VipMoviesResponse } from "../types/movie";
 
-const BASE_URL = "https://dev.begamob.com/project/idrama";
+const BASE_URL = "https://short-movie.begamob.com";
 
 export const api = {
   async getVipExclusiveMovies(): Promise<VipMoviesResponse> {
