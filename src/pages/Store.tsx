@@ -10,6 +10,7 @@ import { mock } from "../assets/data/mock";
 import { useComingSoonMovies, useVipMovies } from "../hooks/useVipMovies";
 import { detectPlatform, type Platform } from "../utils/platformDetection";
 import { trackingIntro } from "../utils/FirebaseUtils";
+import { PlanBox } from "../components/PlanBox";
 
 // Constants from iOS app script
 const PLATFORM = Object.freeze({
@@ -464,84 +465,28 @@ export default function Store() {
           className="flex flex-row gap-4 px-4 py-4 overflow-x-auto"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          <div
-            className={`flex flex-col gap-2 items-center  justify-center ${
-              selectedPlan === "weekly"
-                ? "border-gradient"
-                : "border-gradient-alt"
-            } rounded-[16px] p-1 min-w-[40vw] h-auto py-4 cursor-pointer`}
-            onClick={() => handlePlanSelection("weekly")}
-          >
-            <div className="px-4 rounded-lg">
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-row gap-2 items-center">
-                  <span className="text-[18px] leading-[28px] font-[600] text-white">
-                    Weekly VIP
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="px-4 rounded-lg">
-              <div className="flex flex-row gap-1 items-center justify-center ">
-                <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {renderSubscriptionPrice(weeklyVip) || "$19.99"}
-                </span>
-                <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
-                  {renderSubscriptionSale(weeklyVip) || "$24.99"}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div
-            className={`gap-2 ${
-              selectedPlan === "monthly"
-                ? "border-gradient"
-                : "border-gradient-alt"
-            } rounded-[16px] p-1 min-w-[40vw] flex flex-col justify-center items-center py-4 cursor-pointer`}
-            onClick={() => handlePlanSelection("monthly")}
-          >
-            <div className="px-4 rounded-lg">
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-row justify-between gap-2 items-center">
-                  <span className="text-[18px] leading-[28px] font-[600] text-white">
-                    Monthly VIP
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="px-4 rounded-lg">
-              <div className="flex flex-row justify-between gap-1 items-center h-full">
-                <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {renderSubscriptionPrice(monthlyVip) || "$36.99"}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div
-            className={`gap-4 ${
-              selectedPlan === "yearly"
-                ? "border-gradient"
-                : "border-gradient-alt"
-            } rounded-[16px] p-1 min-w-[40vw] py-4 flex flex-col justify-center items-center cursor-pointer`}
-            onClick={() => handlePlanSelection("yearly")}
-          >
-            <div className="px-4 rounded-lg">
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-row justify-between gap-2 items-center">
-                  <span className="text-[18px] leading-[28px] font-[600] text-white">
-                    Yearly VIP
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="px-4 rounded-lg">
-              <div className="flex flex-row justify-between gap-1 items-center h-full">
-                <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {renderSubscriptionPrice(yearlyVip) || "$249.99"}
-                </span>
-              </div>
-            </div>
-          </div>
+          <PlanBox
+            type="weekly"
+            title="Weekly VIP"
+            price={renderSubscriptionPrice(weeklyVip) || "$19.99"}
+            salePrice={renderSubscriptionSale(weeklyVip) || "$24.99"}
+            selectedPlan={selectedPlan}
+            onSelect={handlePlanSelection}
+          />
+          <PlanBox
+            type="monthly"
+            title="Monthly VIP"
+            price={renderSubscriptionPrice(monthlyVip) || "$36.99"}
+            selectedPlan={selectedPlan}
+            onSelect={handlePlanSelection}
+          />
+          <PlanBox
+            type="yearly"
+            title="Yearly VIP"
+            price={renderSubscriptionPrice(yearlyVip) || "$249.99"}
+            selectedPlan={selectedPlan}
+            onSelect={handlePlanSelection}
+          />
         </div>
         {/* Scrollable Content */}
         <span className="text-[14px] leading-[20px] font-[400] text-start text-[#9E9E9F] mx-4">
