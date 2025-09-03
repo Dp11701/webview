@@ -595,17 +595,18 @@ export default function Home() {
 
   return (
     <div
-      className="flex flex-col h-screen w-full mb-10"
+      className="flex flex-col h-full w-full mb-10"
       style={{
         touchAction: "auto",
         userSelect: "none",
         WebkitUserSelect: "none",
         WebkitTouchCallout: "none",
         WebkitOverflowScrolling: "touch",
+        minHeight: 0,
       }}
     >
       {/* Fixed Header */}
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0 sticky top-0 z-10">
         {/* DramaShort Premium */}
         <div className="flex flex-row items-center justify-between bg-gradient-to-b from-[#5C4E3E] to-[#141415] p-4">
           <div className="flex flex-col">
@@ -627,7 +628,7 @@ export default function Home() {
         </div>
 
         {/* Price for this Ep: */}
-        <div className="flex flex-row justify-start items-center gap-10 px-4 py-4">
+        <div className="flex flex-row justify-start items-center gap-10 px-4 py-4 bg-[#141415]">
           <div className=" flex flex-row gap-2">
             <span className="text-[14px] leading-[20px] font-[400] text-[#9E9E9F]">
               Price for this Ep:

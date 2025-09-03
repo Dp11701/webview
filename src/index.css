@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Ensure the app uses a single scroll container (not the body) */
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
 /* Global rules to prevent text selection and zoom on mobile */
 *, *::before, *::after {
   user-select: none;
@@ -47,10 +53,7 @@ body{
   background-position: center;
   background-repeat: no-repeat;
   
-  /* Prevent viewport bounce on iOS */
-  min-height: 100vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  /* Prevent viewport bounce on iOS - scrolling is handled by inner containers */
   font-family: "Gilroy", sans-serif;
 }
 
