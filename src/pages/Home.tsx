@@ -656,7 +656,7 @@ export default function Home() {
 
       {/* Scrollable Content */}
       <div
-        className="flex-1 overflow-y-auto"
+        className="flex-1 overflow-y-auto h-full"
         style={{
           minHeight: 0,
           WebkitOverflowScrolling: "touch",

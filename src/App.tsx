@@ -8,7 +8,7 @@ import Wallet from "./pages/Coin";
 export default function App() {
   return (
     <Router>
-      <div className="pb-20">
+      <div className="h-full min-h-0 flex flex-col ">
         {" "}
         {/* Add padding bottom to account for fixed navigation */}
         <Routes>
