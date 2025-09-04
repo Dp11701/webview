@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import App from "./App.tsx";
+import { Suspense } from "react";
+import PageLoader from "./components/PageLoader";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -17,7 +19,9 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <Suspense fallback={<PageLoader />}>
+        <App />
+      </Suspense>
     </QueryClientProvider>
   </StrictMode>
 );

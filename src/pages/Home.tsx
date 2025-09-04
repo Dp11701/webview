@@ -898,14 +898,14 @@ export default function Home() {
                   }`}
                   onClick={() => handleCoinPackageSelection(index + 2)}
                 >
-                  <div className="flex flex-row gap-2 items-center justify-start px-5 pt-5">
+                  <div className="flex flex-row gap-2 items-center justify-start px-2 pt-5">
                     <img src={Coin} alt="coin" />
                     <span className="text-[18px] leading-[28px] font-[600] text-white">
                       {packageItem.coin}
                     </span>
                     {renderCoinPackageBonus(packageItem)}
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
                     {packageItem.priceTitle}
                   </span>
                   {/* Bonus Badge */}

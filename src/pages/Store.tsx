@@ -563,7 +563,20 @@ export default function Store() {
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {data.map((movie) => (
-                <div key={movie.id} className="flex gap-3">
+                <div
+                  key={movie.id}
+                  className="flex gap-3"
+                  onClick={() => {
+                    if (window.ikapp?.dismiss) {
+                      window.ikapp.dismiss();
+                    } else {
+                      sendToClient("SELECT_MOVIE", {
+                        id: movie.id,
+                      });
+                      console.log("SELECT_MOVIE", { id: movie.id });
+                    }
+                  }}
+                >
                   {movie.episodes.map((episode) => (
                     <div
                       key={`${movie.id}-${episode.id}`}
