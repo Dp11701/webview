@@ -670,20 +670,19 @@ export default function Store() {
         <div className="flex flex-col gap-2 text-[12px] leading-[18px] font-[400] text-[#E2E2E2] px-4 text-start">
           <span>Tips</span>
           <span>
-            1.DramaReels both free and paid content. You can choose what to
+            1. DramaOn both free and paid content. You can choose what to
             unlock.
           </span>
           <span>
-            2.Reward Coins can be earned through tasks and top-up bonuses, and
+            2. Reward Coins can be earned through tasks and top-up bonuses, and
             can be used like regular Coins to unlock episodes.
           </span>
           <span>
-            3.Reward Coins will expire and are used first when unlocking
+            3. Reward Coins will expire and are used first when unlocking
             content.
           </span>
           <span>
-            4.Privilege: Enjoy unlimited access to DramaReels series during
-            subscription.
+            4. Privilege: Enjoy unlimited access DramaOn during subscription.
           </span>
           <span>
             5. Activation: Subscriptions activate within 24 hours of purchase,
@@ -695,16 +694,16 @@ export default function Store() {
             24 hours before each period, unless canceled.
           </span>
           <span>
-            7.Cancellation: If you want to unsubscribe, please proceed to your{" "}
+            7. Cancellation: If you want to unsubscribe, please proceed to your{" "}
             {platform === PLATFORM.IOS ? "App Store" : "Google Play"} account
             and cancel your subscription at least 24 hours before the end of
             your current subscription period.
           </span>
           <span>
-            8.Pricing: Various plans available with pricing based on your
+            8. Pricing: Various plans available with pricing based on your
             country/region.
           </span>
-          <span>9.For more help, please contact us.</span>
+          <span>9. For more help, please contact us.</span>
         </div>
       </div>
 
