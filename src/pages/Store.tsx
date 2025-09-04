@@ -567,14 +567,9 @@ export default function Store() {
                   key={movie.id}
                   className="flex gap-3"
                   onClick={() => {
-                    if (window.ikapp?.dismiss) {
-                      window.ikapp.dismiss();
-                    } else {
-                      sendToClient("SELECT_MOVIE", {
-                        id: movie.id,
-                      });
-                      console.log("SELECT_MOVIE", { id: movie.id });
-                    }
+                    sendToClient("SELECT_MOVIE", {
+                      id: movie.id,
+                    });
                   }}
                 >
                   {movie.episodes.map((episode) => (
