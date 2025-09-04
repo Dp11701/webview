@@ -452,7 +452,7 @@ export default function Store() {
       {/* Scrollable content with top padding to account for fixed header */}
       <div className="flex-1 overflow-y-auto pb-[200px] pt-[72px]">
         {/* title */}
-        <div className="flex flex-col items-center px-10 mb-10 w-full">
+        <div className="flex flex-col items-center px-10 mb-[24px] w-full">
           <span className="text-[20px] leading-[28px] font-[600] text-center w-[70vw] bg-gradient-to-r from-[#FFEBC3] to-[#CA9834] inline-block text-transparent bg-clip-text">
             Become VIP to Access All Exclusive Benefits
           </span>
@@ -502,31 +502,31 @@ export default function Store() {
             "Unlimited access to all series for 1 year."}
         </span>
         <div className="flex flex-col items-start px-4 pt-4">
-          <div className="flex py-4 w-full gap-2 justify-start items-center border-b border-[#FFFFFF1A] overflow-hidden">
+          <div className="flex py-4 w-full gap-3 justify-start items-center border-b border-[#FFFFFF1A] overflow-hidden">
             <img src={Infinite} alt="Infinite" />
             <span className="text-[16px] leading-[24px] font-[400] text-start text-[#E2E2E2]">
               Unlimited viewing
             </span>
           </div>
-          <div className="flex py-4 w-full gap-2 justify-start items-center border-b border-[#FFFFFF1A]">
+          <div className="flex py-4 w-full gap-3 justify-start items-center border-b border-[#FFFFFF1A]">
             <img src={Hd} alt="Hd" />
             <span className="text-[16px] leading-[24px] font-[400] text-start text-[#E2E2E2]">
               1080p HD
             </span>
           </div>
-          <div className="flex py-4 w-full gap-2 justify-start items-center border-b border-[#FFFFFF1A]">
+          <div className="flex py-4 w-full gap-3 justify-start items-center border-b border-[#FFFFFF1A]">
             <img src={BlockAds} alt="BlockAds" />
             <span className="text-[16px] leading-[24px] font-[400] text-start text-[#E2E2E2]">
               Ad-free
             </span>
           </div>
-          <div className="flex py-4 w-full gap-2 justify-start items-center border-b border-[#FFFFFF1A]">
+          <div className="flex py-4 w-full gap-3 justify-start items-center border-b border-[#FFFFFF1A]">
             <img src={Video} alt="Video" />
             <span className="text-[16px] leading-[24px] font-[400] text-start text-[#E2E2E2]">
               VIP-only dramas
             </span>
           </div>
-          <div className="flex py-4 w-full gap-2 justify-start items-center ">
+          <div className="flex py-4 w-full gap-3 justify-start items-center ">
             <img src={Premium} alt="Premium" />
             <span className="text-[16px] leading-[24px] font-[400] text-start text-[#E2E2E2]">
               Exclusive Extra Clip
@@ -536,7 +536,7 @@ export default function Store() {
 
         {/* VIP Exclusive */}
         <div className="flex flex-col items-start px-4 pt-4">
-          <span className="text-[16px] leading-[24px] font-[600] text-start text-[#E2E2E2] mb-4">
+          <span className="text-[20px] leading-[28px] font-[700] text-start text-[#E2E2E2] mb-4">
             VIP Exclusive
           </span>
 
@@ -612,7 +612,7 @@ export default function Store() {
 
         {/* Coming Soon Section */}
         <div className="flex flex-col items-start px-4 pt-4">
-          <span className="text-[16px] leading-[24px] font-[600] text-start text-[#E2E2E2] mb-4">
+          <span className="text-[20px] leading-[28px] font-[700] text-start text-[#E2E2E2] mb-4">
             Coming Soon
           </span>
 
