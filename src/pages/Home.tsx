@@ -121,6 +121,9 @@ export default function Home() {
     episode: 0,
   });
   const [platform, setPlatform] = useState<Platform>("unknown");
+  // Thêm loading states
+  const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
+  const [showFallback, setShowFallback] = useState<boolean>(false);
 
   // Utility functions to transform platform-specific data
   const transformAndroidProduct = (androidProduct: AndroidProduct): Product => {
@@ -330,6 +333,8 @@ export default function Home() {
   useEffect(() => {
     // Simple polling to check for data every 500ms
     const checkForData = () => {
+      let hasNewData = false;
+
       // Check for products
       if ((window as any).ikapp?.products) {
         const rawProducts = (window as any).ikapp.products;
@@ -351,6 +356,7 @@ export default function Home() {
           .sort((a: Product, b: Product) => a.index - b.index);
 
         setCoinPackages(coinProducts);
+        hasNewData = true;
 
         // Xử lý subscription products với platform-specific product IDs
         let weeklyVip: Product | undefined;
@@ -424,6 +430,12 @@ export default function Home() {
         const extraInfoData = (window as any).ikapp.extraInfo;
         console.log("ExtraInfo found:", extraInfoData);
         setExtraInfo(extraInfoData);
+        hasNewData = true;
+      }
+
+      // Set data loaded flag when we have any data
+      if (hasNewData && !isDataLoaded) {
+        setIsDataLoaded(true);
       }
     };
 
@@ -439,7 +451,18 @@ export default function Home() {
     return () => {
       clearInterval(interval);
     };
-  }, []); // Listen to window.ikapp changes
+  }, [platform, isDataLoaded]); // Add dependencies
+
+  // Timeout effect để hiển thị fallback sau 3 giây nếu không có data
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!isDataLoaded) {
+        setShowFallback(true);
+      }
+    }, 3000); // Show fallback after 3 seconds
+
+    return () => clearTimeout(timeout);
+  }, [isDataLoaded]);
 
   // Separate useEffect to monitor when data is actually received
   useEffect(() => {
@@ -592,6 +615,128 @@ export default function Home() {
       }
     }
   };
+
+  // Loading skeleton component
+  if (!isDataLoaded && !showFallback) {
+    return (
+      <div
+        className="flex flex-col h-full w-full mb-10"
+        style={{
+          touchAction: "auto",
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          WebkitTouchCallout: "none",
+          WebkitOverflowScrolling: "touch",
+          minHeight: 0,
+        }}
+      >
+        {/* Fixed Header Skeleton */}
+        <div className="flex-shrink-0 sticky top-0 z-10">
+          {/* DramaOn Premium Skeleton */}
+          <div className="flex flex-row items-center justify-between bg-gradient-to-b from-[#5C4E3E] to-[#141415] p-4">
+            <div className="flex flex-col">
+              <div className="h-7 w-40 bg-gray-600 rounded animate-pulse"></div>
+            </div>
+            <div className="h-6 w-6 bg-gray-600 rounded animate-pulse"></div>
+          </div>
+
+          {/* Price info skeleton */}
+          <div className="flex flex-row justify-start items-center gap-10 px-4 py-4 bg-[#141415]">
+            <div className="flex flex-row gap-2">
+              <div className="h-5 w-24 bg-gray-600 rounded animate-pulse"></div>
+              <div className="flex flex-row gap-1">
+                <div className="h-5 w-5 bg-gray-600 rounded animate-pulse"></div>
+                <div className="h-5 w-8 bg-gray-600 rounded animate-pulse"></div>
+              </div>
+            </div>
+            <div className="flex flex-row gap-2">
+              <div className="h-5 w-16 bg-gray-600 rounded animate-pulse"></div>
+              <div className="flex flex-row gap-1">
+                <div className="h-5 w-5 bg-gray-600 rounded animate-pulse"></div>
+                <div className="h-5 w-8 bg-gray-600 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Scrollable Content Skeleton */}
+        <div
+          className="flex-1 overflow-y-auto h-full"
+          style={{
+            minHeight: 0,
+            WebkitOverflowScrolling: "touch",
+            overscrollBehavior: "contain",
+          }}
+        >
+          {/* Subscription Plans Skeleton */}
+          <div className="flex flex-col gap-4 px-4 py-4">
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="grid grid-cols-12 gap-4 border border-gray-600 rounded-[16px] p-1"
+              >
+                <div className="col-span-8 p-4 rounded-lg">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex flex-row gap-2 items-center">
+                      <div className="h-6 w-6 bg-gray-600 rounded animate-pulse"></div>
+                      <div className="h-7 w-32 bg-gray-600 rounded animate-pulse"></div>
+                    </div>
+                    <div className="h-4 w-full bg-gray-600 rounded animate-pulse"></div>
+                    <div className="h-3 w-40 bg-gray-600 rounded animate-pulse"></div>
+                  </div>
+                </div>
+                <div className="col-span-4 p-4 rounded-lg">
+                  <div className="flex flex-col gap-1 items-center justify-center h-full">
+                    <div className="h-6 w-16 bg-gray-600 rounded animate-pulse"></div>
+                    <div className="h-5 w-12 bg-gray-600 rounded animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Coin Store Skeleton */}
+          <div className="flex flex-col items-start px-4 mb-10">
+            <div className="h-7 w-24 bg-gray-600 rounded animate-pulse mb-4"></div>
+            <div className="grid grid-cols-12 gap-4 w-full">
+              {[1, 2].map((item) => (
+                <div
+                  key={item}
+                  className="col-span-6 relative flex flex-col gap-2 p-4 bg-[#FFFFFF1A] border border-gray-600 rounded-lg"
+                >
+                  <div className="flex flex-row gap-2 items-center justify-start px-5 pt-5">
+                    <div className="h-6 w-6 bg-gray-600 rounded animate-pulse"></div>
+                    <div className="h-7 w-12 bg-gray-600 rounded animate-pulse"></div>
+                    <div className="h-6 w-4 bg-gray-600 rounded animate-pulse"></div>
+                    <div className="h-6 w-8 bg-gray-600 rounded animate-pulse"></div>
+                  </div>
+                  <div className="h-6 w-16 bg-gray-600 rounded animate-pulse px-5 pb-5"></div>
+                  <div className="absolute bottom-0 right-0 h-8 w-20 bg-gray-600 rounded-tl-[16px] rounded-br-[16px] animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-12 gap-4 w-full mt-4">
+              {[1, 2].map((item) => (
+                <div
+                  key={item + 2}
+                  className="col-span-6 relative flex flex-col gap-2 p-4 bg-[#FFFFFF1A] border border-gray-600 rounded-lg"
+                >
+                  <div className="flex flex-row gap-2 items-center justify-start px-2 pt-5">
+                    <div className="h-6 w-6 bg-gray-600 rounded animate-pulse"></div>
+                    <div className="h-7 w-12 bg-gray-600 rounded animate-pulse"></div>
+                    <div className="h-6 w-4 bg-gray-600 rounded animate-pulse"></div>
+                    <div className="h-6 w-8 bg-gray-600 rounded animate-pulse"></div>
+                  </div>
+                  <div className="h-6 w-16 bg-gray-600 rounded animate-pulse px-2 pb-5"></div>
+                  <div className="absolute bottom-0 right-0 h-8 w-20 bg-gray-600 rounded-tl-[16px] rounded-br-[14px] animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
