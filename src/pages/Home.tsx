@@ -38,6 +38,7 @@ interface IOSProduct {
   specialTitle: string;
   isSpecial: boolean;
   currency: string;
+  sale: string;
 }
 
 // Unified Product interface for internal use
@@ -153,6 +154,7 @@ export default function Home() {
       bonus: iosProduct.bonus,
       title: iosProduct.title,
       costIapId: iosProduct.costIapId,
+      sale: iosProduct.sale,
       // For iOS, we don't have price/sale fields directly
       // They might be embedded in priceTitle with %@ placeholder
       currency: iosProduct.currency,
@@ -231,6 +233,9 @@ export default function Home() {
   const renderSubscriptionSale = (subscription: Product | null) => {
     if (platform === PLATFORM.ANDROID && subscription?.sale) {
       return subscription.sale;
+    }
+    if (platform === PLATFORM.IOS) {
+      return subscription?.sale || "";
     }
     // iOS doesn't have separate sale field
     return null;
