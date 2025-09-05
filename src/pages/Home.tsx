@@ -116,7 +116,7 @@ export default function Home() {
   const [selectedCoinPackage, setSelectedCoinPackage] = useState<number>(0);
   const [extraInfo, setExtraInfo] = useState<ExtraInfo>({
     myCoin: 0,
-    priceFor: 100,
+    priceFor: 0,
     film_id: 0,
     episode: 0,
   });
@@ -781,7 +781,7 @@ export default function Home() {
             <div className="flex flex-row gap-1">
               <img src={Coin} alt="coin" />
               <span className="text-[14px] leading-[20px] font-[500] text-[#E2E2E2]">
-                {extraInfo.priceFor || 100}
+                {extraInfo.priceFor || null}
               </span>
             </div>
           </div>
@@ -792,7 +792,7 @@ export default function Home() {
             <div className="flex flex-row gap-1">
               <img src={Coin} alt="coin" />
               <span className="text-[14px] leading-[20px] font-[500] text-[#E2E2E2]">
-                {extraInfo.myCoin || 0}
+                {extraInfo.myCoin || null}
               </span>
             </div>
           </div>
@@ -844,7 +844,7 @@ export default function Home() {
             <div className="col-span-4  p-4 rounded-lg">
               <div className="flex flex-col gap-1 items-center justify-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {renderSubscriptionPrice(weeklyVip) || "$19.99"}
+                  {renderSubscriptionPrice(weeklyVip) || ""}
                 </span>
                 {renderSubscriptionSale(weeklyVip) && (
                   <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
@@ -884,7 +884,7 @@ export default function Home() {
             <div className="col-span-4  p-4 rounded-lg">
               <div className="flex flex-col gap-1 items-center justify-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {renderSubscriptionPrice(monthlyVip) || "36.99$"}
+                  {renderSubscriptionPrice(monthlyVip) || ""}
                 </span>
                 {/* {renderSubscriptionSale(monthlyVip) && (
                   <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
@@ -924,7 +924,7 @@ export default function Home() {
             <div className="col-span-4  p-4 rounded-lg">
               <div className="flex flex-col gap-1 items-center justify-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {renderSubscriptionPrice(yearlyVip) || "$249.99"}
+                  {renderSubscriptionPrice(yearlyVip) || ""}
                 </span>
                 {/* {renderSubscriptionSale(yearlyVip) && (
                   <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
