@@ -575,9 +575,9 @@ export default function Home() {
   const handleTracking = (event: string, params: any) => {
     console.log("Tracking event:", event, params);
     // Use ikapp.trackingEvent instead of Firebase tracking
+    (window as any).AndroidBridge.trackingEvent(JSON.stringify(params));
     if (window.ikapp?.trackingEvent) {
       // Convert params to string format as required by ikapp.trackingEvent
-      (window as any).AndroidBridge.trackingEvent(JSON.stringify(params));
       const stringParams: Record<string, string> = {};
       Object.keys(params).forEach((key) => {
         stringParams[key] = String(params[key]);
