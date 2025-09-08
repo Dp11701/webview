@@ -315,17 +315,15 @@ export default function Home() {
         window.webkit.messageHandlers.event.postMessage(payloadEvent);
       } else if (
         platform === PLATFORM.ANDROID &&
-        (window as any).AndroidBridge?.postMessage
+        (window as any).ikapp?.postMessage
       ) {
-        (window as any).AndroidBridge.postMessage(JSON.stringify(payloadEvent));
+        (window as any).ikapp.postMessage(JSON.stringify(payloadEvent));
       } else {
         // Fallback: try both methods
         if (window.webkit?.messageHandlers?.event) {
           window.webkit.messageHandlers.event.postMessage(payloadEvent);
-        } else if ((window as any).AndroidBridge?.postMessage) {
-          (window as any).AndroidBridge.postMessage(
-            JSON.stringify(payloadEvent)
-          );
+        } else if ((window as any).ikapp?.postMessage) {
+          (window as any).ikapp.postMessage(JSON.stringify(payloadEvent));
         } else {
           console.warn("No communication bridge found for platform:", platform);
           reject(new Error("No communication bridge available"));
@@ -502,9 +500,9 @@ export default function Home() {
   //     },
   //   };
 
-  //   // 👉 Android (Kotlin) nhận qua AndroidBridge
-  //   if ((window as any).AndroidBridge?.postMessage) {
-  //     (window as any).AndroidBridge.postMessage(JSON.stringify(message));
+  //   // 👉 Android (Kotlin) nhận qua ikapp
+  //   if ((window as any).ikapp?.postMessage) {
+  //     (window as any).ikapp.postMessage(JSON.stringify(message));
   //   }
 
   //   // 👉 iOS (WKWebView) nhận qua messageHandlers
@@ -573,7 +571,6 @@ export default function Home() {
   };
 
   const handleTracking = (event: string, params: any) => {
-    console.log("Tracking event:", event, params);
     // Use ikapp.trackingEvent instead of Firebase tracking
     if (window.ikapp?.trackingEvent) {
       // Convert params to string format as required by ikapp.trackingEvent
