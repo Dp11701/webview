@@ -9,7 +9,7 @@ import Star from "../assets/icons/Star.svg";
 import { mock } from "../assets/data/mock";
 import { useComingSoonMovies, useVipMovies } from "../hooks/useVipMovies";
 import { detectPlatform, type Platform } from "../utils/platformDetection";
-import { trackingIntro } from "../utils/FirebaseUtils";
+// import { trackingIntro } from "../utils/FirebaseUtils"; // Removed: now using ikapp.trackingEvent
 import { PlanBox } from "../components/PlanBox";
 
 // Constants from iOS app script
@@ -209,7 +209,19 @@ export default function Store() {
   }
 
   const handleTracking = (event: string, params: any) => {
-    trackingIntro(event, "sdk_premium_track", params);
+    // Use ikapp.trackingEvent instead of Firebase tracking
+    if (window.ikapp?.trackingEvent) {
+      // Convert params to string format as required by ikapp.trackingEvent
+      const stringParams: Record<string, string> = {};
+      Object.keys(params).forEach((key) => {
+        stringParams[key] = String(params[key]);
+      });
+
+      console.log("Tracking event via ikapp:", event, stringParams);
+      window.ikapp.trackingEvent(event, stringParams);
+    } else {
+      console.warn("ikapp.trackingEvent not available");
+    }
   };
 
   const handlePlanSelection = (plan: "weekly" | "monthly" | "yearly") => {

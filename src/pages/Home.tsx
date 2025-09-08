@@ -3,7 +3,7 @@ import Close from "../assets/icons/Close.svg";
 import Coin from "../assets/icons/Coin.svg";
 import Crown from "../assets/icons/crown.svg";
 import { detectPlatform, type Platform } from "../utils/platformDetection";
-import { trackingIntro } from "../utils/FirebaseUtils";
+// import { trackingIntro } from "../utils/FirebaseUtils"; // Removed: now using ikapp.trackingEvent
 
 // Constants from iOS app script
 const PLATFORM = Object.freeze({
@@ -573,7 +573,19 @@ export default function Home() {
   };
 
   const handleTracking = (event: string, params: any) => {
-    trackingIntro(event, "sdk_premium_track", params);
+    // Use ikapp.trackingEvent instead of Firebase tracking
+    if (window.ikapp?.trackingEvent) {
+      // Convert params to string format as required by ikapp.trackingEvent
+      const stringParams: Record<string, string> = {};
+      Object.keys(params).forEach((key) => {
+        stringParams[key] = String(params[key]);
+      });
+
+      console.log("Tracking event via ikapp:", event, stringParams);
+      window.ikapp.trackingEvent(event, stringParams);
+    } else {
+      console.warn("ikapp.trackingEvent not available");
+    }
   };
 
   const handleCoinPackageSelection = async (index: number) => {
