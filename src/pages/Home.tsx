@@ -535,14 +535,14 @@ export default function Home() {
     }
     // Track plan selection
     handleTracking("select_product", {
-      // action_name: "select_product",
-      // premium_screen_name: "iap_unlock_episode_ver1",
-      // product_id: selectedPlan,
-      // product_type: plan,
-      // price: renderSubscriptionPrice(selectedProduct)?.replace("$", "") || "0",
-      // currency: selectedProduct?.currency || "USD",
-      // film_id: extraInfo.film_id,
-      // episode: extraInfo.episode,
+      action_name: "select_product",
+      premium_screen_name: "iap_unlock_episode_ver1",
+      product_id: selectedPlan,
+      product_type: plan,
+      price: renderSubscriptionPrice(selectedProduct)?.replace("$", "") || "0",
+      currency: selectedProduct?.currency || "USD",
+      film_id: extraInfo.film_id,
+      episode: extraInfo.episode,
     });
     if (selectedProduct) {
       if (platform === PLATFORM.IOS) {
@@ -575,7 +575,6 @@ export default function Home() {
   const handleTracking = (event: string, params: any) => {
     console.log("Tracking event:", event, params);
     // Use ikapp.trackingEvent instead of Firebase tracking
-    (window as any).AndroidBridge.trackingEvent(JSON.stringify(params));
     if (window.ikapp?.trackingEvent) {
       // Convert params to string format as required by ikapp.trackingEvent
       const stringParams: Record<string, string> = {};
