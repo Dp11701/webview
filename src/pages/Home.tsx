@@ -574,13 +574,8 @@ export default function Home() {
     // Use ikapp.trackingEvent instead of Firebase tracking
     if (window.ikapp?.trackingEvent) {
       // Convert params to string format as required by ikapp.trackingEvent
-      const stringParams: Record<string, string> = {};
-      Object.keys(params).forEach((key) => {
-        stringParams[key] = String(params[key]);
-      });
 
-      console.log("Tracking event via ikapp:", event, stringParams);
-      window.ikapp.trackingEvent(event, stringParams);
+      window.ikapp.trackingEvent(event, JSON.stringify(params));
     } else {
       console.warn("ikapp.trackingEvent not available");
     }

@@ -189,17 +189,15 @@ export default function Store() {
         window.webkit.messageHandlers.event.postMessage(payloadEvent);
       } else if (
         platform === PLATFORM.ANDROID &&
-        (window as any).AndroidBridge?.postMessage
+        (window as any).ikapp?.postMessage
       ) {
-        (window as any).AndroidBridge.postMessage(JSON.stringify(payloadEvent));
+        (window as any).ikapp.postMessage(JSON.stringify(payloadEvent));
       } else {
         // Fallback: try both methods
         if (window.webkit?.messageHandlers?.event) {
           window.webkit.messageHandlers.event.postMessage(payloadEvent);
-        } else if ((window as any).AndroidBridge?.postMessage) {
-          (window as any).AndroidBridge.postMessage(
-            JSON.stringify(payloadEvent)
-          );
+        } else if ((window as any).ikapp?.postMessage) {
+          (window as any).ikapp.postMessage(JSON.stringify(payloadEvent));
         } else {
           console.warn("No communication bridge found for platform:", platform);
           reject(new Error("No communication bridge available"));
@@ -212,13 +210,8 @@ export default function Store() {
     // Use ikapp.trackingEvent instead of Firebase tracking
     if (window.ikapp?.trackingEvent) {
       // Convert params to string format as required by ikapp.trackingEvent
-      const stringParams: Record<string, string> = {};
-      Object.keys(params).forEach((key) => {
-        stringParams[key] = String(params[key]);
-      });
 
-      console.log("Tracking event via ikapp:", event, stringParams);
-      window.ikapp.trackingEvent(event, stringParams);
+      window.ikapp.trackingEvent(event, JSON.stringify(params));
     } else {
       console.warn("ikapp.trackingEvent not available");
     }
