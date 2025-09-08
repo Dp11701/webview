@@ -775,6 +775,21 @@ export default function Home() {
                 window.ikapp.dismiss();
               } else {
                 sendToClient("CLOSE_PREMIUM", {});
+                if (window.ikapp?.trackingEvent) {
+                  window.ikapp?.trackingEvent(
+                    "close_premium",
+                    JSON.stringify({
+                      action_name: "close_premium",
+                      premium_screen_name: "iap_unlock_episode_ver1",
+                      product_id: null,
+                      product_type: null,
+                      price: null,
+                      currency: null,
+                      film_id: extraInfo.film_id,
+                      episode: extraInfo.episode,
+                    })
+                  );
+                }
               }
             }}
           >
