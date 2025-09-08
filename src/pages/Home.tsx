@@ -573,6 +573,7 @@ export default function Home() {
   };
 
   const handleTracking = (event: string, params: any) => {
+    console.log("Tracking event:", event, params);
     // Use ikapp.trackingEvent instead of Firebase tracking
     if (window.ikapp?.trackingEvent) {
       // Convert params to string format as required by ikapp.trackingEvent
