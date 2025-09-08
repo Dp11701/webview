@@ -535,14 +535,14 @@ export default function Home() {
     }
     // Track plan selection
     handleTracking("select_product", {
-      action_name: "select_product",
-      premium_screen_name: "iap_unlock_episode_ver1",
-      product_id: selectedPlan,
-      product_type: plan,
-      price: renderSubscriptionPrice(selectedProduct)?.replace("$", "") || "0",
-      currency: selectedProduct?.currency || "USD",
-      film_id: extraInfo.film_id,
-      episode: extraInfo.episode,
+      // action_name: "select_product",
+      // premium_screen_name: "iap_unlock_episode_ver1",
+      // product_id: selectedPlan,
+      // product_type: plan,
+      // price: renderSubscriptionPrice(selectedProduct)?.replace("$", "") || "0",
+      // currency: selectedProduct?.currency || "USD",
+      // film_id: extraInfo.film_id,
+      // episode: extraInfo.episode,
     });
     if (selectedProduct) {
       if (platform === PLATFORM.IOS) {
