@@ -241,7 +241,7 @@ export default function Store() {
       // Track VIP activation
       handleTracking("select_product", {
         action_name: "select_product",
-        premium_screen_name: "iap_unlock_episode_ver1",
+        premium_screen_name: "vip_default_ver1",
         product_id: selectedProduct.productId,
         product_type: selectedPlan,
         price:
@@ -308,7 +308,18 @@ export default function Store() {
       console.error("Restore error:", error);
     }
   };
-
+  useEffect(() => {
+    handleTracking("screen_active", {
+      action_name: "screen_active",
+      premium_screen_name: "vip_default_ver1",
+      product_id: null,
+      product_type: null,
+      price: null,
+      currency: null,
+      film_id: extraInfo.film_id,
+      episode: extraInfo.episode,
+    });
+  }, []);
   // Initialize platform detection
   useEffect(() => {
     // Initialize localPromises if not exists
@@ -442,7 +453,7 @@ export default function Store() {
                   "close_premium",
                   JSON.stringify({
                     action_name: "close_premium",
-                    premium_screen_name: "iap_unlock_episode_ver1",
+                    premium_screen_name: "vip_default_ver1",
                     product_id: null,
                     product_type: null,
                     price: null,

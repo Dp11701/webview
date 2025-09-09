@@ -266,6 +266,18 @@ export default function Home() {
     }
     return false;
   };
+  useEffect(() => {
+    handleTracking("screen_active", {
+      action_name: "screen_active",
+      premium_screen_name: "iap_unlock_episode_ver1",
+      product_id: null,
+      product_type: null,
+      price: null,
+      currency: null,
+      film_id: extraInfo.film_id,
+      episode: extraInfo.episode,
+    });
+  }, []);
 
   // Initialize platform detection and localPromises
   useEffect(() => {
@@ -869,11 +881,15 @@ export default function Home() {
             <div className="col-span-4  p-4 rounded-lg">
               <div className="flex flex-col gap-1 items-center justify-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {renderSubscriptionPrice(weeklyVip) || ""}
+                  {weeklyVip?.sale && PLATFORM.IOS
+                    ? renderSubscriptionSale(weeklyVip)
+                    : renderSubscriptionPrice(weeklyVip) || ""}
                 </span>
                 {renderSubscriptionSale(weeklyVip) && (
                   <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
-                    {renderSubscriptionSale(weeklyVip)}
+                    {weeklyVip?.sale && PLATFORM.IOS
+                      ? renderSubscriptionPrice(weeklyVip)
+                      : renderSubscriptionSale(weeklyVip) || ""}
                   </span>
                 )}
               </div>
