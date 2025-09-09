@@ -789,9 +789,9 @@ export default function Home() {
                 sendToClient("CLOSE_PREMIUM", {});
                 if (window.ikapp?.trackingEvent) {
                   window.ikapp?.trackingEvent(
-                    "close_premium",
+                    "exit",
                     JSON.stringify({
-                      action_name: "close_premium",
+                      action_name: "exit",
                       premium_screen_name: "iap_unlock_episode_ver1",
                       product_id: null,
                       product_type: null,

@@ -450,9 +450,9 @@ export default function Store() {
             onClick={() => {
               if (window.ikapp?.trackingEvent) {
                 window.ikapp.trackingEvent(
-                  "close_premium",
+                  "exit",
                   JSON.stringify({
-                    action_name: "close_premium",
+                    action_name: "exit",
                     premium_screen_name: "vip_default_ver1",
                     product_id: null,
                     product_type: null,
