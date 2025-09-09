@@ -548,7 +548,7 @@ export default function Home() {
       action_name: "select_product",
       premium_screen_name: "iap_unlock_episode_ver1",
       product_id: selectedPlan,
-      product_type: plan,
+      product_type: "subscription",
       price: renderSubscriptionPrice(selectedProduct)?.replace("$", "") || "0",
       currency: selectedProduct?.currency || "USD",
       film_id: extraInfo.film_id,
@@ -601,10 +601,10 @@ export default function Home() {
     handleTracking("select_product", {
       action_name: "select_product",
       premium_screen_name: "iap_unlock_episode_ver1",
-      product_id: selectedCoinPackage,
+      product_id: selectedPackage?.productId || `fallback_coin_${index}`,
       product_type: "iap",
-      price: selectedPackage.priceTitle?.replace("$", "") || "0",
-      currency: selectedPackage.currency || "USD",
+      price: selectedPackage?.priceTitle?.replace("$", "") || "0",
+      currency: selectedPackage?.currency || "USD",
       film_id: extraInfo.film_id,
       episode: extraInfo.episode,
     });
