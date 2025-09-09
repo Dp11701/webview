@@ -210,10 +210,15 @@ export default function Store() {
     // Use ikapp.trackingEvent instead of Firebase tracking
     if (window.ikapp?.trackingEvent) {
       // Convert params to string format as required by ikapp.trackingEvent
-
-      window.ikapp.trackingEvent(event, JSON.stringify(params));
-    } else {
-      console.warn("ikapp.trackingEvent not available");
+      if (window.ikapp?.trackingEvent) {
+        if (platform === PLATFORM.IOS) {
+          window.ikapp.trackingEvent(event, params);
+        } else {
+          window.ikapp.trackingEvent(event, JSON.stringify(params));
+        }
+      } else {
+        console.warn("ikapp.trackingEvent not available");
+      }
     }
   };
 

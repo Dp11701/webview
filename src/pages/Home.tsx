@@ -582,12 +582,28 @@ export default function Home() {
     }
   };
 
-  const handleTracking = (event: string, params: any) => {
-    // Use ikapp.trackingEvent instead of Firebase tracking
-    if (window.ikapp?.trackingEvent) {
-      // Convert params to string format as required by ikapp.trackingEvent
+  const handleTracking = async (event: string, params: any) => {
+    // On iOS, send back a JSON "file" payload to native instead of calling trackingEvent directly
+    // if (platform === PLATFORM.IOS) {
+    //   const fileContent = JSON.stringify({ event, ...params }, null, 2);
+    //   try {
+    //     await sendToClient("TRACKING_EVENT_JSON", {
+    //       fileName: `tracking_${event}.json`,
+    //       fileContent,
+    //     });
+    //   } catch (error) {
+    //     console.warn("Failed to send tracking JSON to iOS:", error);
+    //   }
+    //   return;
+    // }
 
-      window.ikapp.trackingEvent(event, JSON.stringify(params));
+    // Other platforms: keep using ikapp.trackingEvent
+    if (window.ikapp?.trackingEvent) {
+      if (platform === PLATFORM.IOS) {
+        window.ikapp.trackingEvent(event, params);
+      } else {
+        window.ikapp.trackingEvent(event, JSON.stringify(params));
+      }
     } else {
       console.warn("ikapp.trackingEvent not available");
     }
