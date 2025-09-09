@@ -243,7 +243,7 @@ export default function Store() {
         action_name: "select_product",
         premium_screen_name: "vip_default_ver1",
         product_id: selectedProduct.productId,
-        product_type: selectedPlan,
+        product_type: "subscription",
         price:
           renderSubscriptionPrice(selectedProduct)?.replace("$", "") || "0",
         currency: selectedProduct.currency || "USD",
