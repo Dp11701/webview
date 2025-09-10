@@ -796,6 +796,21 @@ export default function Home() {
           <button
             onClick={() => {
               if (platform === PLATFORM.IOS && window.ikapp?.dismiss) {
+                if (window.ikapp?.trackingEvent) {
+                  window.ikapp?.trackingEvent(
+                    "exit",
+                    JSON.stringify({
+                      action_name: "exit",
+                      premium_screen_name: "iap_unlock_episode_ver1",
+                      product_id: null,
+                      product_type: null,
+                      price: null,
+                      currency: null,
+                      film_id: extraInfo.film_id,
+                      episode: extraInfo.episode,
+                    })
+                  );
+                }
                 window.ikapp.dismiss();
               } else {
                 sendToClient("CLOSE_PREMIUM", {});
