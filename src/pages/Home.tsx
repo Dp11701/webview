@@ -897,15 +897,21 @@ export default function Home() {
             <div className="col-span-4  p-4 rounded-lg">
               <div className="flex flex-col gap-1 items-center justify-center h-full">
                 <span className="text-white font-[700] text-[18px] leading-[24px]">
-                  {weeklyVip?.sale && PLATFORM.IOS
-                    ? renderSubscriptionSale(weeklyVip)
-                    : renderSubscriptionPrice(weeklyVip) || ""}
+                  {platform === PLATFORM.IOS
+                    ? renderSubscriptionPrice(weeklyVip) || ""
+                    : weeklyVip?.sale ||
+                      renderSubscriptionPrice(weeklyVip) ||
+                      ""}
                 </span>
-                {renderSubscriptionSale(weeklyVip) && (
+                {((platform === PLATFORM.IOS &&
+                  renderSubscriptionSale(weeklyVip)) ||
+                  (platform === PLATFORM.ANDROID &&
+                    weeklyVip?.sale &&
+                    weeklyVip?.price)) && (
                   <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
-                    {weeklyVip?.sale && PLATFORM.IOS
-                      ? renderSubscriptionPrice(weeklyVip)
-                      : renderSubscriptionSale(weeklyVip) || ""}
+                    {platform === PLATFORM.IOS
+                      ? renderSubscriptionSale(weeklyVip)
+                      : weeklyVip?.price}
                   </span>
                 )}
               </div>
