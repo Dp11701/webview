@@ -599,11 +599,7 @@ export default function Home() {
 
     // Other platforms: keep using ikapp.trackingEvent
     if (window.ikapp?.trackingEvent) {
-      if (platform === PLATFORM.IOS) {
-        window.ikapp.trackingEvent(event, params);
-      } else {
-        window.ikapp.trackingEvent(event, JSON.stringify(params));
-      }
+      window.ikapp.trackingEvent(event, JSON.stringify(params));
     } else {
       console.warn("ikapp.trackingEvent not available");
     }

@@ -211,11 +211,7 @@ export default function Store() {
     if (window.ikapp?.trackingEvent) {
       // Convert params to string format as required by ikapp.trackingEvent
       if (window.ikapp?.trackingEvent) {
-        if (platform === PLATFORM.IOS) {
-          window.ikapp.trackingEvent(event, params);
-        } else {
-          window.ikapp.trackingEvent(event, JSON.stringify(params));
-        }
+        window.ikapp.trackingEvent(event, JSON.stringify(params));
       } else {
         console.warn("ikapp.trackingEvent not available");
       }
