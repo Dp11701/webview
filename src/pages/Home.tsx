@@ -901,7 +901,7 @@ export default function Home() {
                     ? renderSubscriptionSale(weeklyVip) || ""
                     : renderSubscriptionPrice(weeklyVip) || ""}
                 </span>
-                {platform === PLATFORM.IOS && (
+                {weeklyVip?.sale && (
                   <span className="text-[16px] leading-[24px] font-[500] text-[#E2E2E2] line-through">
                     {platform === PLATFORM.IOS
                       ? renderSubscriptionPrice(weeklyVip)
