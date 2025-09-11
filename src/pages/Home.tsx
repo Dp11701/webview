@@ -1021,14 +1021,14 @@ export default function Home() {
                   }`}
                   onClick={() => handleCoinPackageSelection(index)}
                 >
-                  <div className="flex flex-row gap-2 items-center justify-start px-5 pt-5">
+                  <div className="flex flex-row gap-2 items-center justify-start px-2 pt-5">
                     <img src={Coin} alt="coin" />
                     <span className="text-[18px] leading-[28px] font-[600] text-white">
                       {packageItem.coin}
                     </span>
                     {renderCoinPackageBonus(packageItem)}
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
                     {packageItem.priceTitle}
                   </span>
                   {/* Bonus Badge */}
@@ -1062,7 +1062,7 @@ export default function Home() {
                       100
                     </span>
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
                     $2.99
                   </span>
                   <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-3 py-2 rounded-tl-[16px] rounded-br-[16px]">
@@ -1089,7 +1089,7 @@ export default function Home() {
                       150
                     </span>
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
                     $6.99
                   </span>
                   <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-3 py-2 rounded-tl-[16px] rounded-br-[14px]">
@@ -1152,7 +1152,7 @@ export default function Home() {
                       300
                     </span>
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
                     $9.99
                   </span>
                 </div>
@@ -1176,7 +1176,7 @@ export default function Home() {
                       1000
                     </span>
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-5 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
                     $19.99
                   </span>
                   <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-3 py-2 rounded-tl-[16px] rounded-br-[14px]">
