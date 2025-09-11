@@ -260,7 +260,7 @@ export default function Home() {
 
   const shouldShowBonusBadge = (packageItem: Product) => {
     if (platform === PLATFORM.IOS) {
-      return packageItem.bonus && packageItem.bonus > 0;
+      return packageItem.isSpecial && packageItem.specialTitle;
     } else if (platform === PLATFORM.ANDROID) {
       return packageItem.isSpecial && packageItem.specialTitle;
     }
