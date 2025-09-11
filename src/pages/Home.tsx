@@ -242,16 +242,9 @@ export default function Home() {
   };
 
   const renderBonusSpecialTitle = (packageItem: Product) => {
-    if (
-      platform === PLATFORM.IOS &&
-      packageItem.bonus &&
-      packageItem.bonus > 0
-    ) {
+    if (platform === PLATFORM.IOS && packageItem.specialTitle) {
       // Calculate bonus percentage for iOS
-      const bonusPercent = Math.round(
-        (packageItem.bonus / packageItem.coin) * 100
-      );
-      return `BONUS ${bonusPercent}%`;
+      return packageItem.specialTitle;
     } else if (platform === PLATFORM.ANDROID && packageItem.specialTitle) {
       return packageItem.specialTitle;
     }
