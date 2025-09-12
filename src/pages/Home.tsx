@@ -393,7 +393,7 @@ export default function Home() {
           );
           monthlyVip = subscriptionProducts.find(
             (product: Product) =>
-              product.productId === "iOS_Short_Drama_sub_weekly_vip_2" &&
+              product.productId === "iOS_Short_Drama_sub_monthly_vip_1" &&
               (product.priceTitle?.includes("Per Month") ||
                 product.subTitle?.includes("1 month"))
           );
