@@ -165,6 +165,9 @@ export default function Store() {
     if (platform === PLATFORM.ANDROID && subscription?.sale) {
       return subscription.sale;
     }
+    if (platform === PLATFORM.IOS) {
+      return subscription?.sale || "";
+    }
     return null;
   };
 
