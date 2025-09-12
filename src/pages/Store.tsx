@@ -536,8 +536,8 @@ export default function Store() {
           {selectedPlan === "weekly" &&
             `${
               platform === PLATFORM.IOS
-                ? renderSubscriptionSale(weeklyVip)
-                : renderSubscriptionPrice(weeklyVip)
+                ? renderSubscriptionSale(weeklyVip) || "$19.99"
+                : renderSubscriptionPrice(weeklyVip) || "$19.99"
             } for the first week, then ${
               platform === PLATFORM.IOS
                 ? renderSubscriptionPrice(weeklyVip)
