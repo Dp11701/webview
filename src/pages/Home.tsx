@@ -830,7 +830,7 @@ export default function Home() {
         </div>
 
         {/* Price for this Ep: */}
-        <div className="flex flex-row justify-start items-center gap-10 px-4 py-4 bg-[#141415]">
+        <div className="flex flex-row justify-start items-center gap-10 px-4 pb-4 pt-0 bg-[#141415]">
           <div className=" flex flex-row gap-2">
             <span className="text-[14px] leading-[20px] font-[400] text-[#9E9E9F]">
               Price for this Ep:
@@ -1003,7 +1003,7 @@ export default function Home() {
 
         {/* DramaShort Premium */}
         <div className="flex flex-col items-start px-4 mb-10">
-          <span className="text-[18px] leading-[28px] font-[600] text-white mb-4">
+          <span className="text-[18px] leading-[28px] font-[600] text-white mb-1">
             Coin Store
           </span>
           <div className="grid grid-cols-12 gap-4 w-full">
@@ -1018,14 +1018,14 @@ export default function Home() {
                   }`}
                   onClick={() => handleCoinPackageSelection(index)}
                 >
-                  <div className="flex flex-row gap-2 items-center justify-start px-2 pt-5">
+                  <div className="flex flex-row gap-2 items-center justify-start px-2 pt-2">
                     <img src={Coin} alt="coin" />
                     <span className="text-[18px] leading-[28px] font-[600] text-white">
                       {packageItem.coin}
                     </span>
                     {renderCoinPackageBonus(packageItem)}
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-2">
                     {packageItem.priceTitle}
                   </span>
                   {/* Bonus Badge */}
@@ -1047,7 +1047,7 @@ export default function Home() {
                   }`}
                   onClick={() => handleCoinPackageSelection(0)}
                 >
-                  <div className="flex flex-row gap-2 items-center justify-start px-5 pt-5">
+                  <div className="flex flex-row gap-2 items-center justify-start px-5 pt-2">
                     <img src={Coin} alt="coin" />
                     <span className="text-[18px] leading-[28px] font-[600] text-white">
                       100
@@ -1059,7 +1059,7 @@ export default function Home() {
                       100
                     </span>
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-2">
                     $2.99
                   </span>
                   <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-3 py-2 rounded-tl-[16px] rounded-br-[16px]">
@@ -1074,7 +1074,7 @@ export default function Home() {
                   }`}
                   onClick={() => handleCoinPackageSelection(1)}
                 >
-                  <div className="flex flex-row gap-2 items-center justify-start px-5 pt-5">
+                  <div className="flex flex-row gap-2 items-center justify-start px-5 pt-2">
                     <img src={Coin} alt="coin" />
                     <span className="text-[18px] leading-[28px] font-[600] text-white">
                       300
@@ -1086,7 +1086,7 @@ export default function Home() {
                       150
                     </span>
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-2">
                     $6.99
                   </span>
                   <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-3 py-2 rounded-tl-[16px] rounded-br-[14px]">
@@ -1108,14 +1108,14 @@ export default function Home() {
                   }`}
                   onClick={() => handleCoinPackageSelection(index + 2)}
                 >
-                  <div className="flex flex-row gap-2 items-center justify-start px-2 pt-5">
+                  <div className="flex flex-row gap-2 items-center justify-start px-2 pt-2">
                     <img src={Coin} alt="coin" />
                     <span className="text-[18px] leading-[28px] font-[600] text-white">
                       {packageItem.coin}
                     </span>
                     {renderCoinPackageBonus(packageItem)}
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-2">
                     {packageItem.priceTitle}
                   </span>
                   {/* Bonus Badge */}
@@ -1137,7 +1137,7 @@ export default function Home() {
                   }`}
                   onClick={() => handleCoinPackageSelection(2)}
                 >
-                  <div className="flex flex-row gap-2 items-center justify-start px-5 pt-5">
+                  <div className="flex flex-row gap-2 items-center justify-start px-5 pt-2">
                     <img src={Coin} alt="coin" />
                     <span className="text-[18px] leading-[28px] font-[600] text-white">
                       700
@@ -1149,7 +1149,7 @@ export default function Home() {
                       300
                     </span>
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-2">
                     $9.99
                   </span>
                 </div>
@@ -1161,7 +1161,7 @@ export default function Home() {
                   }`}
                   onClick={() => handleCoinPackageSelection(3)}
                 >
-                  <div className="flex flex-row gap-2 items-center justify-start px-5 pt-5">
+                  <div className="flex flex-row gap-2 items-center justify-start px-5 pt-2">
                     <img src={Coin} alt="coin" />
                     <span className="text-[18px] leading-[28px] font-[600] text-white">
                       1000
@@ -1173,7 +1173,7 @@ export default function Home() {
                       1000
                     </span>
                   </div>
-                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-5">
+                  <span className="text-[16px] font-[400] leading-[24px] text-[#9E9E9F] px-2 pb-2">
                     $19.99
                   </span>
                   <div className="absolute bottom-0 right-0 border-gradient-bonus-normal text-[#FFFFFF] text-[10px] font-[600] px-3 py-2 rounded-tl-[16px] rounded-br-[14px]">
