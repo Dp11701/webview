@@ -886,11 +886,19 @@ export default function Home() {
                   </span>
                 </div>
                 <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
-                  {`${weeklyVip?.subTitle} ${renderSubscriptionPrice(
-                    weeklyVip
-                  )}  for the first week, then ${renderSubscriptionSale(
-                    weeklyVip
-                  )}/week` ||
+                  {`${weeklyVip?.subTitle} ${
+                    platform === PLATFORM.IOS
+                      ? renderSubscriptionSale(weeklyVip)
+                      : renderSubscriptionPrice(weeklyVip)
+                  }  for the first week, then ${
+                    platform === PLATFORM.IOS
+                      ? renderSubscriptionPrice(weeklyVip)
+                      : renderSubscriptionSale(weeklyVip)
+                  } for the first week, then ${
+                    platform === PLATFORM.IOS
+                      ? renderSubscriptionPrice(weeklyVip)
+                      : renderSubscriptionSale(weeklyVip)
+                  }/week` ||
                     "Unlimited access to all series for 1 week $19.99 for the first month, then $24.99/month"}
                 </span>
                 <span className="font-[500] text-[9px] leading-[12px] text-white">
