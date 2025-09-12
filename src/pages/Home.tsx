@@ -767,7 +767,7 @@ export default function Home() {
 
   return (
     <div
-      className="flex flex-col h-full w-full mb-10"
+      className="flex flex-col h-full w-full "
       style={{
         touchAction: "auto",
         userSelect: "none",
@@ -866,7 +866,7 @@ export default function Home() {
         }}
       >
         {/* Subscription */}
-        <div className="flex flex-col gap-4 px-4 py-4">
+        <div className="flex flex-col gap-4 px-4 py-1">
           <div
             className={`grid grid-cols-12 gap-4 ${
               selectedPlan === "weekly"
@@ -875,7 +875,7 @@ export default function Home() {
             } rounded-[16px] p-1`}
             onClick={() => handlePlanSelection("weekly")}
           >
-            <div className="col-span-8 p-4 rounded-lg">
+            <div className="col-span-8 px-4 py-1 rounded-lg">
               <div className="flex flex-col gap-2">
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
@@ -927,7 +927,7 @@ export default function Home() {
             } rounded-[16px] p-1`}
             onClick={() => handlePlanSelection("monthly")}
           >
-            <div className="col-span-8 p-4 rounded-lg">
+            <div className="col-span-8 px-4 py-1 rounded-lg">
               <div className="flex flex-col gap-2">
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
@@ -967,7 +967,7 @@ export default function Home() {
             } rounded-[16px] p-1`}
             onClick={() => handlePlanSelection("yearly")}
           >
-            <div className="col-span-8 p-4 rounded-lg">
+            <div className="col-span-8 px-4 py-1 rounded-lg">
               <div className="flex flex-col gap-2">
                 <div className="flex flex-row gap-2 items-center">
                   <img src={Crown} alt="crown" />
@@ -1011,7 +1011,7 @@ export default function Home() {
               coinPackages.slice(0, 2).map((packageItem, index) => (
                 <div
                   key={packageItem.productId}
-                  className={`col-span-6 relative flex flex-col gap-2 p-4 bg-[#FFFFFF1A] ${
+                  className={`col-span-6 relative flex flex-col gap-2 px-4 py-1 bg-[#FFFFFF1A] ${
                     selectedCoinPackage === index
                       ? "border-gradient-alt-2"
                       : "border-gradient-alt-3"
@@ -1101,7 +1101,7 @@ export default function Home() {
               coinPackages.slice(2, 4).map((packageItem, index) => (
                 <div
                   key={packageItem.productId}
-                  className={`col-span-6 relative flex flex-col gap-2 p-4 bg-[#FFFFFF1A] ${
+                  className={`col-span-6 relative flex flex-col gap-2 px-4 py-1 bg-[#FFFFFF1A] ${
                     selectedCoinPackage === index + 2
                       ? "border-gradient-alt-2"
                       : "border-gradient-alt-3"
@@ -1130,7 +1130,7 @@ export default function Home() {
               // Fallback for second row
               <>
                 <div
-                  className={`col-span-6 relative flex flex-col gap-2 p-4 bg-[#FFFFFF1A] ${
+                  className={`col-span-6 relative flex flex-col gap-2 px-4 py-1 bg-[#FFFFFF1A] ${
                     selectedCoinPackage === 2
                       ? "border-gradient-alt-2"
                       : "border-gradient-alt-3"
@@ -1154,7 +1154,7 @@ export default function Home() {
                   </span>
                 </div>
                 <div
-                  className={`col-span-6 relative flex flex-col gap-2 p-4 bg-[#FFFFFF1A] ${
+                  className={`col-span-6 relative flex flex-col gap-2 px-4 py-1 bg-[#FFFFFF1A] ${
                     selectedCoinPackage === 3
                       ? "border-gradient-alt-2"
                       : "border-gradient-alt-3"
