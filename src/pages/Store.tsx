@@ -500,8 +500,16 @@ export default function Store() {
           <PlanBox
             type="weekly"
             title="Weekly VIP"
-            price={renderSubscriptionPrice(weeklyVip) || "$19.99"}
-            salePrice={renderSubscriptionSale(weeklyVip) || "$24.99"}
+            price={
+              platform === PLATFORM.IOS
+                ? renderSubscriptionSale(weeklyVip) || "$19.99"
+                : renderSubscriptionPrice(weeklyVip) || "$19.99"
+            }
+            salePrice={
+              platform === PLATFORM.IOS
+                ? renderSubscriptionPrice(weeklyVip) || "$24.99"
+                : renderSubscriptionSale(weeklyVip) || "$24.99"
+            }
             selectedPlan={selectedPlan}
             onSelect={handlePlanSelection}
           />
@@ -523,11 +531,15 @@ export default function Store() {
         {/* Scrollable Content */}
         <span className="text-[14px] leading-[20px] font-[400] text-start text-[#9E9E9F] mx-4">
           {selectedPlan === "weekly" &&
-            `${renderSubscriptionPrice(
-              weeklyVip
-            )} for the first week, then ${renderSubscriptionSale(
-              weeklyVip
-            )}/Week`}
+            `${
+              platform === PLATFORM.IOS
+                ? renderSubscriptionSale(weeklyVip)
+                : renderSubscriptionPrice(weeklyVip)
+            } for the first week, then ${
+              platform === PLATFORM.IOS
+                ? renderSubscriptionPrice(weeklyVip)
+                : renderSubscriptionSale(weeklyVip)
+            }/Week`}
           {selectedPlan === "monthly" &&
             "Unlimited access to all series for 1 month."}
           {selectedPlan === "yearly" &&
