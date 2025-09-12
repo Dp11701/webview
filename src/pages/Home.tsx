@@ -894,10 +894,6 @@ export default function Home() {
                     platform === PLATFORM.IOS
                       ? renderSubscriptionPrice(weeklyVip)
                       : renderSubscriptionSale(weeklyVip)
-                  } for the first week, then ${
-                    platform === PLATFORM.IOS
-                      ? renderSubscriptionPrice(weeklyVip)
-                      : renderSubscriptionSale(weeklyVip)
                   }/week` ||
                     "Unlimited access to all series for 1 week $19.99 for the first month, then $24.99/month"}
                 </span>
