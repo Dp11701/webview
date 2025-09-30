@@ -45,6 +45,7 @@ interface IOSProduct {
   specialTitle?: string;
   isSpecial?: boolean;
   currency: string;
+  sale?: string;
 }
 
 // Unified Product interface for internal use
@@ -126,6 +127,7 @@ export default function Store() {
       title: iosProduct.title,
       costIapId: iosProduct.costIapId,
       currency: iosProduct.currency,
+      sale: iosProduct.sale,
     };
   };
 
