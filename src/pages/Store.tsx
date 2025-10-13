@@ -719,40 +719,56 @@ export default function Store() {
         <div className="flex flex-col gap-2 text-[12px] leading-[18px] font-[400] text-[#E2E2E2] px-4 text-start">
           <span>Tips</span>
           <span>
-            1. DramaOn both free and paid content. You can choose what to
-            unlock.
+            1. DramaOn offers both free and premium content, giving you the
+            freedom to choose how you want to watch based on your preferences.
           </span>
           <span>
-            2. Reward Coins can be earned through tasks and top-up bonuses, and
-            can be used like regular Coins to unlock episodes.
+            2. You can enjoy the first few episodes of each drama for free.
+            Later episodes will be locked, and you’ll need to unlock them to
+            keep watching.
+          </span>
+          <div>
+            <span>3. There are three ways to unlock episodes:</span>
+            <div className="mt-1 ml-4">
+              <div>
+                (1) Subscribe to a VIP plan for unlimited access to all dramas,
+              </div>
+              <div>(2) Use coins to unlock individual episodes, or</div>
+              <div>(3) Watch ads to unlock individual episodes for free.</div>
+            </div>
+          </div>
+          <span>
+            4. VIP users get full access to all dramas, an ad-free experience,
+            full HD video quality, and early access to new releases. VIP
+            subscriptions are available weekly, monthly, and yearly, and will
+            automatically renew unless canceled
           </span>
           <span>
-            3. Reward Coins will expire and are used first when unlocking
-            content.
+            5. You can cancel your subscription anytime through your App Store
+            or Google Play account. After canceling, your VIP access will remain
+            active until the end of the current billing cycle.
           </span>
           <span>
-            4. Privilege: Enjoy unlimited access DramaOn during subscription.
+            6. DramaOn uses two types of coins with equal value: purchased coins
+            and reward coins. Purchased coins are bought through coin packages,
+            while reward coins are earned by completing tasks or watching ads.
+            Coin packs are one-time purchases and do not renew automatically.
           </span>
           <span>
-            5. Activation: Subscriptions activate within 24 hours of purchase,
-            pending approval from{" "}
-            {platform === PLATFORM.IOS ? "App Store" : "Google Play"}.
+            7. When you unlock an episode, coins will automatically be deducted
+            from your wallet. You can check your coin balance in Settings →
+            Wallet.
           </span>
           <span>
-            6. Auto-Renewal: Subscriptions auto-renew at original price, charged
-            24 hours before each period, unless canceled.
+            8. If you don’t have enough coins, the app will notify you and
+            suggest topping up or subscribing to a VIP plan to continue
+            watching.
           </span>
           <span>
-            7. Cancellation: If you want to unsubscribe, please proceed to your{" "}
-            {platform === PLATFORM.IOS ? "App Store" : "Google Play"} account
-            and cancel your subscription at least 24 hours before the end of
-            your current subscription period.
+            9. If you experience any issues with payments, VIP access, or coin
+            usage, please reach out to our support team through the app — we’re
+            here to help as soon as possible.
           </span>
-          <span>
-            8. Pricing: Various plans available with pricing based on your
-            country/region.
-          </span>
-          <span>9. For more help, please contact us.</span>
         </div>
       </div>
 
