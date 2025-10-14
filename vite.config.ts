@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import viteCompression from "vite-plugin-compression";
 import legacy from "@vitejs/plugin-legacy";
-import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
+// import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -16,15 +16,14 @@ export default defineConfig({
     legacy({
       targets: ["defaults", "not IE 11"],
     }),
-    ViteImageOptimizer({
-      png: { quality: 85 },
-      jpeg: { quality: 85 },
-      webp: { quality: 80 },
-      avif: { quality: 75 },
-    }),
+    // ViteImageOptimizer({
+    //   png: { quality: 85 },
+    //   jpeg: { quality: 85 },
+    //   webp: { quality: 80 },
+    //   avif: { quality: 75 },
+    // }),
   ],
   build: {
-    target: "esnext",
     cssCodeSplit: true,
     sourcemap: false,
     minify: "esbuild",
@@ -33,7 +32,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           react: ["react", "react-dom"],
-          vendor: ["axios", "zustand", "react-router-dom"],
+          vendor: ["axios", "react-router-dom"],
         },
       },
     },
