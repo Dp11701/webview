@@ -23,6 +23,9 @@ export default defineConfig({
     //   avif: { quality: 75 },
     // }),
   ],
+  optimizeDeps: {
+    include: ["i18next", "react-i18next", "i18next-browser-languagedetector"],
+  },
   build: {
     cssCodeSplit: true,
     sourcemap: false,

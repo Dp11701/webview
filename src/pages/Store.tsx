@@ -11,6 +11,8 @@ import { useComingSoonMovies, useVipMovies } from "../hooks/useVipMovies";
 import { detectPlatform, type Platform } from "../utils/platformDetection";
 // import { trackingIntro } from "../utils/FirebaseUtils"; // Removed: now using ikapp.trackingEvent
 import { PlanBox } from "../components/PlanBox";
+import { useTranslation } from "react-i18next";
+import { useInitLanguage } from "../hooks/useInitLanguage";
 
 // Constants from iOS app script
 const PLATFORM = Object.freeze({
@@ -73,6 +75,8 @@ interface ExtraInfo {
 }
 
 export default function Store() {
+  const { t } = useTranslation();
+  useInitLanguage();
   const [selectedPlan, setSelectedPlan] = useState("weekly");
   const [weeklyVip, setWeeklyVip] = useState<Product | null>(null);
   const [monthlyVip, setMonthlyVip] = useState<Product | null>(null);
@@ -84,6 +88,8 @@ export default function Store() {
     film_id: 0,
     episode: 0,
   });
+
+  // language initialization now handled by useInitLanguage
 
   // Use TanStack Query to fetch VIP movies
   const { data: vipMoviesData, isLoading, error } = useVipMovies();
@@ -491,7 +497,7 @@ export default function Store() {
         {/* title */}
         <div className="flex flex-col items-center px-10 mb-[24px] w-full">
           <span className="text-[20px] leading-[28px] font-[600] text-center w-[70vw] bg-gradient-to-r from-[#FFEBC3] to-[#CA9834] inline-block text-transparent bg-clip-text">
-            Become VIP to Access All Exclusive Benefits
+            {t("becomeVipToAccessAllExclusiveBenefits")}
           </span>
         </div>
 
@@ -504,7 +510,7 @@ export default function Store() {
         >
           <PlanBox
             type="weekly"
-            title="Weekly VIP"
+            title={t("weeklyVip")}
             price={
               platform === PLATFORM.IOS
                 ? renderSubscriptionSale(weeklyVip) || "$19.99"
@@ -520,14 +526,14 @@ export default function Store() {
           />
           <PlanBox
             type="monthly"
-            title="Monthly VIP"
+            title={t("monthlyVip")}
             price={renderSubscriptionPrice(monthlyVip) || "$36.99"}
             selectedPlan={selectedPlan}
             onSelect={handlePlanSelection}
           />
           <PlanBox
             type="yearly"
-            title="Yearly VIP"
+            title={t("yearlyVip")}
             price={renderSubscriptionPrice(yearlyVip) || "$249.99"}
             selectedPlan={selectedPlan}
             onSelect={handlePlanSelection}
@@ -540,45 +546,44 @@ export default function Store() {
               platform === PLATFORM.IOS
                 ? renderSubscriptionSale(weeklyVip) || "$19.99"
                 : renderSubscriptionPrice(weeklyVip) || "$19.99"
-            } for the first week, then ${
+            } ${t("forTheFirstWeekThen")} ${
               platform === PLATFORM.IOS
                 ? renderSubscriptionPrice(weeklyVip)
                 : renderSubscriptionSale(weeklyVip)
-            }/Week`}
+            }/${t("week")}`}
           {selectedPlan === "monthly" &&
-            "Unlimited access to all series for 1 month."}
-          {selectedPlan === "yearly" &&
-            "Unlimited access to all series for 1 year."}
+            t("unlimitedAccessToAllSeriesFor1Month")}
+          {selectedPlan === "yearly" && t("unlimitedAccessToAllSeriesFor1Year")}
         </span>
         <div className="flex flex-col items-start px-4 pt-4">
           <div className="flex py-4 w-full gap-3 justify-start items-center border-b border-[#FFFFFF1A] overflow-hidden">
             <img src={Infinite} alt="Infinite" />
             <span className="text-[16px] leading-[24px] font-[400] text-start text-[#E2E2E2]">
-              Unlimited viewing
+              {t("unlimitedViewing")}
             </span>
           </div>
           <div className="flex py-4 w-full gap-3 justify-start items-center border-b border-[#FFFFFF1A]">
             <img src={Hd} alt="Hd" />
             <span className="text-[16px] leading-[24px] font-[400] text-start text-[#E2E2E2]">
-              1080p HD
+              {t("1080pHd")}
             </span>
           </div>
           <div className="flex py-4 w-full gap-3 justify-start items-center border-b border-[#FFFFFF1A]">
             <img src={BlockAds} alt="BlockAds" />
             <span className="text-[16px] leading-[24px] font-[400] text-start text-[#E2E2E2]">
-              Ad-free
+              {t("adFree")}
             </span>
           </div>
           <div className="flex py-4 w-full gap-3 justify-start items-center border-b border-[#FFFFFF1A]">
             <img src={Video} alt="Video" />
             <span className="text-[16px] leading-[24px] font-[400] text-start text-[#E2E2E2]">
-              VIP-only dramas
+              {t("vipOnlyDramas")}
             </span>
           </div>
           <div className="flex py-4 w-full gap-3 justify-start items-center ">
             <img src={Premium} alt="Premium" />
             <span className="text-[16px] leading-[24px] font-[400] text-start text-[#E2E2E2]">
-              Exclusive Extra Clip
+              {t("exclusiveExtraClip")}
             </span>
           </div>
         </div>
@@ -586,7 +591,7 @@ export default function Store() {
         {/* VIP Exclusive */}
         <div className="flex flex-col items-start px-4 pt-4">
           <span className="text-[20px] leading-[28px] font-[700] text-start text-[#E2E2E2] mb-4">
-            VIP Exclusive
+            {t("vipExclusive")}
           </span>
 
           {/* Loading state */}
@@ -662,7 +667,7 @@ export default function Store() {
         {/* Coming Soon Section */}
         <div className="flex flex-col items-start px-4 pt-4">
           <span className="text-[20px] leading-[28px] font-[700] text-start text-[#E2E2E2] mb-4">
-            Coming Soon
+            {t("comingSoon")}
           </span>
 
           {/* Loading state */}
@@ -717,58 +722,23 @@ export default function Store() {
 
         {/* Tips and tricks */}
         <div className="flex flex-col gap-2 text-[12px] leading-[18px] font-[400] text-[#E2E2E2] px-4 text-start">
-          <span>Tips</span>
-          <span>
-            1. DramaOn offers both free and premium content, giving you the
-            freedom to choose how you want to watch based on your preferences.
-          </span>
-          <span>
-            2. You can enjoy the first few episodes of each drama for free.
-            Later episodes will be locked, and you’ll need to unlock them to
-            keep watching.
-          </span>
+          <span>{t("tips")}</span>
+          <span>1. {t("tip1")}</span>
+          <span>2. {t("tip2")}</span>
           <div>
-            <span>3. There are three ways to unlock episodes:</span>
+            <span>3. {t("tip3")}</span>
             <div className="mt-1 ml-4">
-              <div>
-                (1) Subscribe to a VIP plan for unlimited access to all dramas,
-              </div>
-              <div>(2) Use coins to unlock individual episodes, or</div>
-              <div>(3) Watch ads to unlock individual episodes for free.</div>
+              <div>(1) {t("tip4")}</div>
+              <div>(2) {t("tip5")}</div>
+              <div>(3) {t("tip6")}</div>
             </div>
           </div>
-          <span>
-            4. VIP users get full access to all dramas, an ad-free experience,
-            full HD video quality, and early access to new releases. VIP
-            subscriptions are available weekly, monthly, and yearly, and will
-            automatically renew unless canceled
-          </span>
-          <span>
-            5. You can cancel your subscription anytime through your App Store
-            or Google Play account. After canceling, your VIP access will remain
-            active until the end of the current billing cycle.
-          </span>
-          <span>
-            6. DramaOn uses two types of coins with equal value: purchased coins
-            and reward coins. Purchased coins are bought through coin packages,
-            while reward coins are earned by completing tasks or watching ads.
-            Coin packs are one-time purchases and do not renew automatically.
-          </span>
-          <span>
-            7. When you unlock an episode, coins will automatically be deducted
-            from your wallet. You can check your coin balance in Settings →
-            Wallet.
-          </span>
-          <span>
-            8. If you don’t have enough coins, the app will notify you and
-            suggest topping up or subscribing to a VIP plan to continue
-            watching.
-          </span>
-          <span>
-            9. If you experience any issues with payments, VIP access, or coin
-            usage, please reach out to our support team through the app — we’re
-            here to help as soon as possible.
-          </span>
+          <span>4. {t("tip7")}</span>
+          <span>5. {t("tip8")}</span>
+          <span>6. {t("tip9")}</span>
+          <span>7. {t("tip10")}</span>
+          <span>8. {t("tip11")}</span>
+          <span>9. {t("tip12")}</span>
         </div>
       </div>
 

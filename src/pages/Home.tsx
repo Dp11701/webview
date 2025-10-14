@@ -3,6 +3,8 @@ import Close from "../assets/icons/Close.svg";
 import Coin from "../assets/icons/Coin.svg";
 import Crown from "../assets/icons/crown.svg";
 import { detectPlatform, type Platform } from "../utils/platformDetection";
+import { useTranslation } from "react-i18next";
+import { useInitLanguage } from "../hooks/useInitLanguage";
 // import { trackingIntro } from "../utils/FirebaseUtils"; // Removed: now using ikapp.trackingEvent
 
 // Constants from iOS app script
@@ -107,6 +109,10 @@ declare global {
 }
 
 export default function Home() {
+  //test i18n
+  const { t } = useTranslation();
+  useInitLanguage();
+
   const [weeklyVip, setWeeklyVip] = useState<Product | null>(null);
   const [monthlyVip, setMonthlyVip] = useState<Product | null>(null);
   const [yearlyVip, setYearlyVip] = useState<Product | null>(null);
@@ -160,6 +166,8 @@ export default function Home() {
       currency: iosProduct.currency,
     };
   };
+
+  // language initialization now handled by useInitLanguage
 
   const processProductsBasedOnPlatform = (rawProducts: any[]): Product[] => {
     if (platform === PLATFORM.ANDROID) {
@@ -833,7 +841,7 @@ export default function Home() {
         <div className="flex flex-row justify-start items-center gap-10 px-4 pb-4 pt-0 bg-[#141415]">
           <div className=" flex flex-row gap-2">
             <span className="text-[14px] leading-[20px] font-[400] text-[#9E9E9F]">
-              Price for this Ep:
+              {t("priceForThisEp")}:
             </span>
             <div className="flex flex-row gap-1">
               <img src={Coin} alt="coin" />
@@ -844,7 +852,7 @@ export default function Home() {
           </div>
           <div className=" flex flex-row gap-2">
             <span className="text-[14px] leading-[20px] font-[400] text-[#9E9E9F]">
-              Balance:
+              {t("balance")}:
             </span>
             <div className="flex flex-row gap-1">
               <img src={Coin} alt="coin" />
@@ -890,7 +898,7 @@ export default function Home() {
                     platform === PLATFORM.IOS
                       ? renderSubscriptionSale(weeklyVip)
                       : renderSubscriptionPrice(weeklyVip)
-                  }  for the first week, then ${
+                  }  ${t("forTheFirstWeekThen")} ${
                     platform === PLATFORM.IOS
                       ? renderSubscriptionPrice(weeklyVip)
                       : renderSubscriptionSale(weeklyVip)
@@ -898,7 +906,7 @@ export default function Home() {
                     "Unlimited access to all series for 1 week $19.99 for the first month, then $24.99/month"}
                 </span>
                 <span className="font-[500] text-[9px] leading-[12px] text-white">
-                  Auto renew • Cancel anytime
+                  {t("autoRenewCancelAnytime")}
                 </span>
               </div>
             </div>
@@ -939,10 +947,10 @@ export default function Home() {
                 </div>
                 <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
                   {monthlyVip?.subTitle ||
-                    "Unlimited access to all series for 1 month"}
+                    t("unlimitedAccessToAllSeriesFor1Month")}
                 </span>
                 <span className="font-[500] text-[9px] leading-[12px] text-white">
-                  Auto renew • Cancel anytime
+                  {t("autoRenewCancelAnytime")}
                 </span>
               </div>
             </div>
@@ -979,10 +987,10 @@ export default function Home() {
                 </div>
                 <span className="text-[11px] leading-[16px] font-[500] text-[#E2E2E2]">
                   {yearlyVip?.subTitle ||
-                    "Unlimited access to all series for 1 year"}
+                    t("unlimitedAccessToAllSeriesFor1Year")}
                 </span>
                 <span className="font-[500] text-[9px] leading-[12px] text-white">
-                  Auto renew • Cancel anytime
+                  {t("autoRenewCancelAnytime")}
                 </span>
               </div>
             </div>
@@ -1004,7 +1012,7 @@ export default function Home() {
         {/* DramaShort Premium */}
         <div className="flex flex-col items-start px-4 mb-10">
           <span className="text-[18px] leading-[28px] font-[600] text-white mb-1">
-            Coin Store
+            {t("coinStore")}
           </span>
           <div className="grid grid-cols-12 gap-4 w-full">
             {coinPackages.length > 0 ? (

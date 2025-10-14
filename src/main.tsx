@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { Suspense } from "react";
 import PageLoader from "./components/PageLoader";
+import "./i18n";
 
 // Create a client
 const queryClient = new QueryClient({
